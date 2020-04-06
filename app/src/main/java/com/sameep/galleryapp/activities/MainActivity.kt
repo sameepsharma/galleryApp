@@ -31,6 +31,7 @@ private var count = 0
 private lateinit var thumbnails: Array<Bitmap?>
 private var thumbnailsselection: BooleanArray? = null
 private lateinit var arrPath: Array<String?>
+private lateinit var arrName: Array<String?>
 private var typeMedia: IntArray? = null
 private var galleryAdapter: GalleryAdapter? = null
 lateinit var loader: ProgressBar
@@ -123,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         arrPath = arrayOfNulls<String>(count)
         typeMedia = IntArray(count)
         thumbnailsselection = BooleanArray(count)
+
         for (i in 0 until count) {
             imagecursor.moveToPosition(i)
             val id: Int = imagecursor.getInt(image_column_index)
@@ -132,13 +134,20 @@ class MainActivity : AppCompatActivity() {
             bmOptions.inPurgeable = true
             val type: Int = imagecursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
             val t: Int = imagecursor.getInt(type)
-            if (t == 1) thumbnails[i] = MediaStore.Images.Thumbnails.getThumbnail(
+            if (t == 1) {thumbnails[i] = MediaStore.Images.Thumbnails.getThumbnail(
                 this.getContentResolver(), id.toLong(),
                 MediaStore.Images.Thumbnails.MINI_KIND, bmOptions
-            ) else if (t == 3) thumbnails[i] = MediaStore.Video.Thumbnails.getThumbnail(
+            )
+                val name = MediaStore.Images.ImageColumns.DISPLAY_NAME
+                arrName[i]=name
+            } else if (t == 3) {thumbnails[i] = MediaStore.Video.Thumbnails.getThumbnail(
                 this.getContentResolver(), id.toLong(),
                 MediaStore.Video.Thumbnails.MINI_KIND, bmOptions
             )
+                val name = MediaStore.Video.VideoColumns.DISPLAY_NAME
+                arrName[i]=name
+
+            }
             arrPath[i] = imagecursor.getString(dataColumnIndex)
             try {
                 typeMedia!![i] = imagecursor.getInt(type)
