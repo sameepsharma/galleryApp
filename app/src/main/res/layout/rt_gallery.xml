@@ -18,12 +18,14 @@
             android:id="@+id/rt_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scaleType="centerCrop"
         />
 
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
     <TextView
+        android:id="@+id/rt_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Name"

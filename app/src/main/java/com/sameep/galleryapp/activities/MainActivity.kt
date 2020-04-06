@@ -124,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         arrPath = arrayOfNulls<String>(count)
         typeMedia = IntArray(count)
         thumbnailsselection = BooleanArray(count)
+        arrName= arrayOfNulls<String>(count)
 
         for (i in 0 until count) {
             imagecursor.moveToPosition(i)
@@ -138,14 +139,11 @@ class MainActivity : AppCompatActivity() {
                 this.getContentResolver(), id.toLong(),
                 MediaStore.Images.Thumbnails.MINI_KIND, bmOptions
             )
-                val name = MediaStore.Images.ImageColumns.DISPLAY_NAME
-                arrName[i]=name
+
             } else if (t == 3) {thumbnails[i] = MediaStore.Video.Thumbnails.getThumbnail(
                 this.getContentResolver(), id.toLong(),
                 MediaStore.Video.Thumbnails.MINI_KIND, bmOptions
             )
-                val name = MediaStore.Video.VideoColumns.DISPLAY_NAME
-                arrName[i]=name
 
             }
             arrPath[i] = imagecursor.getString(dataColumnIndex)

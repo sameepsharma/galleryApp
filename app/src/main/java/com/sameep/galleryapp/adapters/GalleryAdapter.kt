@@ -9,15 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sameep.galleryapp.R
 import kotlinx.android.synthetic.main.rt_gallery.view.*
 
-class GalleryAdapter(val context: Context, var thumbnails: Array<Bitmap?>, var names : Array<String?>
-) : RecyclerView.Adapter<GalleryAdapter.MyViewHolder>() {
+class GalleryAdapter(val context: Context, var thumbnails: Array<Bitmap?>) : RecyclerView.Adapter<GalleryAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
        fun setData(position: Int){
            itemView.rt_iv.setImageBitmap(thumbnails[position])
-           names[position].let {
-               itemView.rt
-           }
+           /*names[position].let {
+               itemView.rt_tv.text=names[position]
+       }    */
+
        }
     }
 
