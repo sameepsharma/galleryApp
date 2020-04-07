@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupViews()
-        fn_checkpermission()
+        checkpermission()
 
 
     }
@@ -53,10 +53,14 @@ class MainActivity : AppCompatActivity() {
         val  layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
         main_rv.layoutManager=layoutManager
 
+        main_swipe.setOnRefreshListener {
+            getMedia()
+            main_swipe.isRefreshing=false
+        }
 
     }
 
-    private fun fn_checkpermission() {
+    private fun checkpermission() {
         /*RUN TIME PERMISSIONS*/
         if (ContextCompat.checkSelfPermission(
                 applicationContext,
