@@ -1,7 +1,6 @@
 package com.sameep.galleryapp.activities
 
 import android.Manifest
-import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -12,7 +11,6 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.adapters.GalleryAdapter
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.NullPointerException
 
 
 private const val REQUEST_PERMISSIONS = 1001
@@ -32,7 +29,9 @@ private lateinit var thumbnails: Array<Bitmap?>
 private var thumbnailsselection: BooleanArray? = null
 private lateinit var arrPath: Array<String?>
 private lateinit var arrName: Array<String?>
-private var typeMedia: IntArray? = null
+private lateinit var arrDate: Array<String?>
+private lateinit var arrMime: Array<String?>
+private lateinit var typeMedia: Array<Int?>
 private var galleryAdapter: GalleryAdapter? = null
 lateinit var loader: ProgressBar
 
@@ -43,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupViews()
+        fn_checkpermission()
+
 
     }
 
@@ -51,7 +52,6 @@ class MainActivity : AppCompatActivity() {
 
         val  layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
         main_rv.layoutManager=layoutManager
-        fn_checkpermission()
 
 
     }
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Files.FileColumns.DATE_ADDED,
             MediaStore.Files.FileColumns.MEDIA_TYPE,
             MediaStore.Files.FileColumns.MIME_TYPE,
-            MediaStore.Files.FileColumns.TITLE
+            MediaStore.Files.FileColumns.DISPLAY_NAME
         )
         val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
                 + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
@@ -122,39 +122,46 @@ class MainActivity : AppCompatActivity() {
         count = imagecursor.getCount()
         thumbnails = arrayOfNulls<Bitmap>(count)
         arrPath = arrayOfNulls<String>(count)
-        typeMedia = IntArray(count)
+        typeMedia = arrayOfNulls<Int>(count)
         thumbnailsselection = BooleanArray(count)
         arrName= arrayOfNulls<String>(count)
+        arrDate= arrayOfNulls(count)
+        arrMime= arrayOfNulls(count)
 
         for (i in 0 until count) {
             imagecursor.moveToPosition(i)
             val id: Int = imagecursor.getInt(image_column_index)
+            val dateCol = imagecursor.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED)
+            arrDate[i] = imagecursor.getString(dateCol)
+            val mimeCol = imagecursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE)
+            arrMime[i] = imagecursor.getString(mimeCol)
             val dataColumnIndex: Int = imagecursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)
             val bmOptions = BitmapFactory.Options()
             bmOptions.inSampleSize = 4
             bmOptions.inPurgeable = true
             val type: Int = imagecursor.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
             val t: Int = imagecursor.getInt(type)
+            typeMedia[i] = t
             if (t == 1) {thumbnails[i] = MediaStore.Images.Thumbnails.getThumbnail(
                 this.getContentResolver(), id.toLong(),
                 MediaStore.Images.Thumbnails.MINI_KIND, bmOptions
             )
+                val nameColumn: Int = imagecursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME)
+                arrName[i]=imagecursor.getString(nameColumn)
 
             } else if (t == 3) {thumbnails[i] = MediaStore.Video.Thumbnails.getThumbnail(
                 this.getContentResolver(), id.toLong(),
                 MediaStore.Video.Thumbnails.MINI_KIND, bmOptions
             )
+                val nameColumn: Int = imagecursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)
+                arrName[i]=imagecursor.getString(nameColumn)
 
             }
             arrPath[i] = imagecursor.getString(dataColumnIndex)
-            try {
-                typeMedia!![i] = imagecursor.getInt(type)
-            }catch (e:NullPointerException){
-                Log.e("NullException<<","YES<<<")
-            }
+
         }
         Log.e("Size>>>", "${thumbnails.size}<<<")
-        var galleryAdapter = GalleryAdapter(this@MainActivity, thumbnails)
+        val galleryAdapter = GalleryAdapter(this@MainActivity, thumbnails, arrName, arrPath, typeMedia, arrDate, typeMedia, arrMime)
         main_rv.adapter=galleryAdapter
         main_loader.visibility=View.GONE
     }
