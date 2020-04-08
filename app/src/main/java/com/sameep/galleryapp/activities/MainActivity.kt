@@ -37,6 +37,7 @@ private lateinit var typeMedia: Array<Int?>
 private var galleryAdapter: GalleryAdapter? = null
 lateinit var loader: ProgressBar
 
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         setupViews()
         checkpermission()
         //getMedia()
-        getMediaAndSetAdapter()
+
 
 
     }
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         main_rv.layoutManager=layoutManager
 
         main_swipe.setOnRefreshListener {
+            main_loader.visibility=View.VISIBLE
             getMediaAndSetAdapter()
             main_swipe.isRefreshing=false
         }
@@ -156,10 +158,23 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             Log.e("Else", "Else")
+            getMediaAndSetAdapter()
             //getMedia()
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            REQUEST_PERMISSIONS -> {
+                getMediaAndSetAdapter()
+            }
+        }
+    }
 
 //Previous method caused UI freeze
     /*private fun getMedia() {
