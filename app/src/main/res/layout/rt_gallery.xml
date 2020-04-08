@@ -21,16 +21,13 @@
             android:scaleType="centerCrop"
         />
 
-        <TextView
-            android:id="@+id/rt_tv_video"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_bg"
-            android:text="VIDEO"
-            android:textSize="10sp"
-            android:textColor="@android:color/holo_green_light"
-            android:padding="5dp"/>
+        <ImageView
+            android:id="@+id/rt_iv_type"
+            android:visibility="visible"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_photo"
+            />
 
     </RelativeLayout>
 

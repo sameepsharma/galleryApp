@@ -50,8 +50,8 @@ class GalleryAdapter(
            names[position].let {
                itemView.rt_tv.text=names[position]
        }
-           if (typeMedia[position] == 3)
-               itemView.rt_tv_video.visibility=View.VISIBLE
+           if (typeMedia[position] == 3){}
+              // itemView.rt_tv_video.visibility=View.VISIBLE
 
        }
     }

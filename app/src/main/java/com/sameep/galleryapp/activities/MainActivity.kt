@@ -11,15 +11,17 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.androidcodeman.simpleimagegallery.utils.GalleryAdapterTwo
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.adapters.GalleryAdapter
+import com.sameep.galleryapp.dataclasses.pictureFacer
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 
 private const val REQUEST_PERMISSIONS = 1001
@@ -43,8 +45,16 @@ class MainActivity : AppCompatActivity() {
 
         setupViews()
         checkpermission()
+        //getMedia()
+        getMediaAndSetAdapter()
 
 
+    }
+
+    private fun getMediaAndSetAdapter() {
+        val allpictures = getAllMedia()
+        val adapterTwo = GalleryAdapterTwo(allpictures, this)
+        main_rv.adapter=adapterTwo
     }
 
     private fun setupViews() {
@@ -54,12 +64,68 @@ class MainActivity : AppCompatActivity() {
         main_rv.layoutManager=layoutManager
 
         main_swipe.setOnRefreshListener {
-            getMedia()
+            getMediaAndSetAdapter()
             main_swipe.isRefreshing=false
         }
 
     }
+    fun getAllMedia(): ArrayList<pictureFacer> {
+        val columns = arrayOf(
+            MediaStore.Files.FileColumns._ID,
+            MediaStore.Files.FileColumns.DATA,
+            MediaStore.Files.FileColumns.DATE_ADDED,
+            MediaStore.Files.FileColumns.MEDIA_TYPE,
+            MediaStore.Files.FileColumns.MIME_TYPE,
+            MediaStore.Files.FileColumns.DISPLAY_NAME
+        )
+        var images: ArrayList<pictureFacer> = ArrayList<pictureFacer>()
+        val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                + " OR "
+                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+        val orderBy = MediaStore.Files.FileColumns.DATE_ADDED
+        val queryUri: Uri = MediaStore.Files.getContentUri("external")
 
+        val cursor: Cursor? = this@MainActivity.getContentResolver().query(
+            queryUri,
+            columns,
+            selection,
+            null,
+            orderBy + " ASC" // Sort order.
+        )
+        Log.e("Size New>>>", "${cursor?.count}")
+        try {
+            cursor?.moveToFirst()
+            do {
+                val pic:pictureFacer = pictureFacer(
+                    cursor!!.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)) ,
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
+
+                    // cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
+                    )
+                images.add(pic)
+                Log.e("CursorSize>>", "${images.size}<<<")
+            } while (cursor!!.moveToNext())
+            cursor.close()
+            val reSelection: ArrayList<pictureFacer> =
+                ArrayList<pictureFacer>()
+            for (i in images.size - 1 downTo 0) {
+                reSelection.add(images[i])
+            }
+            images = reSelection
+        } catch (e: Exception) {
+            Log.e("ExceptionHere>> ", e.localizedMessage)
+            e.printStackTrace()
+        }
+        Log.e("BeforeSize>>>", "${images.size}<<<")
+        main_loader.visibility=View.GONE
+        return images
+    }
     private fun checkpermission() {
         /*RUN TIME PERMISSIONS*/
         if (ContextCompat.checkSelfPermission(
@@ -90,13 +156,13 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             Log.e("Else", "Else")
-            getMedia()
+            //getMedia()
         }
     }
 
 
-
-    private fun getMedia() {
+//Previous method caused UI freeze
+    /*private fun getMedia() {
 
         val columns = arrayOf(
             MediaStore.Files.FileColumns._ID,
@@ -168,25 +234,6 @@ class MainActivity : AppCompatActivity() {
         val galleryAdapter = GalleryAdapter(this@MainActivity, thumbnails, arrName, arrPath, typeMedia, arrDate, typeMedia, arrMime)
         main_rv.adapter=galleryAdapter
         main_loader.visibility=View.GONE
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
-            REQUEST_PERMISSIONS->{
-                for (i in 0 until  grantResults.size) {
-                    if (grantResults.size > 0 && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    getMedia();
-                } else {
-                    Toast.makeText(this, "The app was not allowed to read or write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-        }
-    }
+    }*/
 
 }
