@@ -1,72 +1,73 @@
-package com.sameep.galleryapp.adapters
+package com.androidcodeman.simpleimagegallery.utils
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
+
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
-import kotlinx.android.synthetic.main.rt_gallery.view.*
+import com.sameep.galleryapp.dataclasses.PicHolder
+import com.sameep.galleryapp.dataclasses.PictureFacer
+import java.util.*
 
 class GalleryAdapter(
-    val context: Context,
-    var thumbnails: Array<Bitmap?>,
-    var names: Array<String?>,
-    var paths: Array<String?>,
-    var type: Array<Int?>,
-    var dates: Array<String?>,
-    var typeMedia: Array<Int?>,
-    var arrMime: Array<String?>
-) : RecyclerView.Adapter<GalleryAdapter.MyViewHolder>() {
+    pictureList: List<PictureFacer>,
+    pictureContx: Context
 
-    inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+) :
+    RecyclerView.Adapter<PicHolder>() {
+    private val pictureList: List<PictureFacer>
+    private val pictureContx: Context
 
-        var pos: Int=0
-
-        init {
-            itemView.setOnClickListener{
-                val intent = Intent(context, ImageDetailActivity::class.java)
-                Log.e("String>>", dates[pos])
-                val longTime = dates[pos]?.toLong()
-                Log.e("Long>>", "$longTime <<<")
-                intent.putExtra("name", names[pos])
-                intent.putExtra("date", longTime)
-                intent.putExtra("type", typeMedia[pos])
-                intent.putExtra("mime", arrMime[pos])
-                intent.putExtra("path", paths[pos])
-
-                context.startActivity(intent)
-
-            }
-        }
-
-       fun setData(position: Int){
-           pos = position
-           itemView.rt_iv.setImageBitmap(thumbnails[position])
-           names[position].let {
-               itemView.rt_tv.text=names[position]
-       }
-           if (typeMedia[position] == 3){}
-              // itemView.rt_tv_video.visibility=View.VISIBLE
-
-       }
+    override fun onCreateViewHolder(container: ViewGroup, position: Int): PicHolder {
+        val view = LayoutInflater.from(pictureContx).inflate(R.layout.rt_gallery, container, false)
+        return PicHolder(view)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.rt_gallery, parent, false)
-        return MyViewHolder(view)
+    override fun onBindViewHolder(holder: PicHolder, position: Int) {
+        val image: PictureFacer = pictureList[position]
+        Log.e("MediaType>>>", "${image.mediaType}<<<")
+        Glide.with(pictureContx)
+            .load(image.picturePath)
+            .apply(RequestOptions().centerCrop())
+            .into(holder.picture)
+        ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
+
+        if (image.mediaType==1)
+            holder.type.setBackgroundResource(R.drawable.ic_photo)
+        else if (image.mediaType==3)
+            holder.type.setBackgroundResource(R.drawable.ic_video)
+
+        holder.name.text = image.picturName
+
+        holder.picture.setOnClickListener {
+            val intent = Intent(pictureContx, ImageDetailActivity::class.java)
+
+            intent.putExtra(ImageDetailActivity.dataKey.INTENT_DATA, image)
+
+            pictureContx.startActivity(intent)
+        }
 
     }
 
     override fun getItemCount(): Int {
-       return thumbnails.size
+        return pictureList.size
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.setData(position)
+    /**
+     *
+     * @param pictureList ArrayList of pictureFacer objects
+     * @param pictureContx The Activities Context
+     * @param picListerner An interface for listening to clicks on the RecyclerView's items
+     */
+    init {
+        this.pictureList = pictureList
+        this.pictureContx = pictureContx
     }
 }
