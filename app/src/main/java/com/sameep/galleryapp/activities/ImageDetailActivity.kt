@@ -3,6 +3,8 @@ package com.sameep.galleryapp.activities
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.PictureFacer
 import kotlinx.android.synthetic.main.activity_image_detail.*
@@ -21,7 +23,9 @@ class ImageDetailActivity : AppCompatActivity() {
         val extra_data = intent.getParcelableExtra<PictureFacer>(dataKey.INTENT_DATA)
 
         extra_data.let {
-            detail_iv.setImageURI(Uri.parse(extra_data.picturePath))
+            Glide.with(this)
+                .load(extra_data.picturePath)
+                .into(detail_iv)
             detail_tv_date.text = getDate(extra_data.date.toLong(), "MMM dd, yyyy hh:mm:ss.SSS")
             detail_tv_mime.text = (extra_data.mime)
             detail_tv_name.text = extra_data.picturName

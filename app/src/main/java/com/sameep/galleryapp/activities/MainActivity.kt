@@ -1,6 +1,8 @@
 package com.sameep.galleryapp.activities
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
@@ -25,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 private const val REQUEST_PERMISSIONS = 1001
 private lateinit var mainViewModel: MainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     private fun setAdapter(data: List<PictureFacer>) {
 
         val adapterTwo = GalleryAdapter(data, this)
+        adapterTwo.delegate=this
         main_rv.adapter = adapterTwo
         main_loader.visibility = View.GONE
     }
@@ -111,5 +114,17 @@ class MainActivity : AppCompatActivity() {
                 setUpObserver()
             }
         }
+    }
+
+    override fun fireIntent(image: PictureFacer) {
+        var intent:Intent?=null
+        if (image.mediaType==1)
+        intent = Intent(this@MainActivity, ImageDetailActivity::class.java)
+        else{ // Some other target activity
+             }
+
+        intent?.putExtra(ImageDetailActivity.dataKey.INTENT_DATA, image)
+
+        startActivity(intent)
     }
 }

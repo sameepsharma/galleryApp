@@ -1,5 +1,6 @@
 package com.androidcodeman.simpleimagegallery.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -12,18 +13,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
-import com.sameep.galleryapp.dataclasses.PicHolder
+import com.sameep.galleryapp.viewholders.PicHolder
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import java.util.*
 
-class GalleryAdapter(
-    pictureList: List<PictureFacer>,
-    pictureContx: Context
+class GalleryAdapter(pictureList: List<PictureFacer>, pictureContx: Context) : RecyclerView.Adapter<PicHolder>(){
 
-) :
-    RecyclerView.Adapter<PicHolder>() {
-    private val pictureList: List<PictureFacer>
-    private val pictureContx: Context
+    open interface onClickItem {
+        fun fireIntent(item: PictureFacer)
+    }
+    var delegate: onClickItem? = null
+
+    private val pictureList: List<PictureFacer> = pictureList
+    private val pictureContx: Context = pictureContx
 
     override fun onCreateViewHolder(container: ViewGroup, position: Int): PicHolder {
         val view = LayoutInflater.from(pictureContx).inflate(R.layout.rt_gallery, container, false)
@@ -37,37 +38,28 @@ class GalleryAdapter(
             .load(image.picturePath)
             .apply(RequestOptions().centerCrop())
             .into(holder.picture)
-        ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
+        //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
 
-        if (image.mediaType==1)
+        if (image.mediaType == 1)
             holder.type.setBackgroundResource(R.drawable.ic_photo)
-        else if (image.mediaType==3)
+        else if (image.mediaType == 3)
             holder.type.setBackgroundResource(R.drawable.ic_video)
 
         holder.name.text = image.picturName
 
         holder.picture.setOnClickListener {
-            val intent = Intent(pictureContx, ImageDetailActivity::class.java)
 
-            intent.putExtra(ImageDetailActivity.dataKey.INTENT_DATA, image)
+            delegate?.fireIntent(image)
 
-            pictureContx.startActivity(intent)
+
         }
 
     }
+
+
 
     override fun getItemCount(): Int {
         return pictureList.size
     }
 
-    /**
-     *
-     * @param pictureList ArrayList of pictureFacer objects
-     * @param pictureContx The Activities Context
-     * @param picListerner An interface for listening to clicks on the RecyclerView's items
-     */
-    init {
-        this.pictureList = pictureList
-        this.pictureContx = pictureContx
-    }
 }

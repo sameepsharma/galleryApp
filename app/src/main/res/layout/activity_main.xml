@@ -9,13 +9,6 @@
     android:padding="15dp"
     tools:context=".activities.MainActivity">
 
-    <ProgressBar
-        android:id="@+id/main_loader"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:visibility="gone"
-        android:layout_centerInParent="true" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_swipe"
         android:layout_width="match_parent"
@@ -26,5 +19,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ProgressBar
+        android:id="@+id/main_loader"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

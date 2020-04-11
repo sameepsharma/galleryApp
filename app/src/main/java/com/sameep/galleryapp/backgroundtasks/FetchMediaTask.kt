@@ -7,11 +7,17 @@ import android.os.AsyncTask
 import android.provider.MediaStore
 import android.util.Log
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import com.sameep.galleryapp.viewmodel.MainViewModel
 
-class FetchMediaTask internal constructor(context: Context) :
+open class FetchMediaTask internal constructor(context: Context) :
     AsyncTask<Unit, Unit, List<PictureFacer>>() {
-    private val activityReference = context
+    private val context = context
+
+    //Get Result
+    open interface AsyncResponse {
+        fun processFinish(resultMedia: List<PictureFacer>?)
+    }
+
+    var delegate: AsyncResponse? = null
 
     override fun doInBackground(vararg params: Unit?): List<PictureFacer> {
         return getAllMedia()
@@ -20,7 +26,8 @@ class FetchMediaTask internal constructor(context: Context) :
     override fun onPostExecute(result: List<PictureFacer>) {
         super.onPostExecute(result)
 
-        MainViewModel.dataToShow.allMedia.value = result
+        delegate?.processFinish(result)
+        //MainViewModel.allMedia.value = result
     }
 
     fun getAllMedia(): List<PictureFacer> {
@@ -41,7 +48,7 @@ class FetchMediaTask internal constructor(context: Context) :
         val orderBy = MediaStore.Files.FileColumns.DATE_ADDED
         val queryUri: Uri = MediaStore.Files.getContentUri("external")
 
-        val cursor: Cursor? = activityReference.getContentResolver().query(
+        val cursor: Cursor? = context.getContentResolver().query(
             queryUri,
             columns,
             selection,

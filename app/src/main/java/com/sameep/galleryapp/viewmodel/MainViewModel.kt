@@ -17,21 +17,22 @@ import com.sameep.galleryapp.backgroundtasks.FetchMediaTask
 import com.sameep.galleryapp.dataclasses.PictureFacer
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(val applicationRef: Application) : AndroidViewModel(applicationRef), FetchMediaTask.AsyncResponse {
 
-    val context = getApplication<Application>().applicationContext
-
-    object dataToShow {
-        var allMedia = MutableLiveData<List<PictureFacer>>()
-    }
+    var allMedia = MutableLiveData<List<PictureFacer>>()
 
     fun getAllMedia(): LiveData<List<PictureFacer>> {
-        return dataToShow.allMedia
+        return allMedia
     }
 
     fun loadMedia() {
-
-        val task = FetchMediaTask(context)
+        val task = FetchMediaTask(applicationRef)
+        task.delegate=this
         task.execute()
     }
+
+    override fun processFinish(resultMedia: List<PictureFacer>?) {
+        allMedia.value = resultMedia
+    }
+
 }
