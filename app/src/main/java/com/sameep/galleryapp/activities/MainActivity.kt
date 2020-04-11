@@ -118,10 +118,10 @@ class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
 
     override fun fireIntent(image: PictureFacer) {
         var intent:Intent?=null
-        if (image.mediaType==1)
+       // if (image.mediaType==1)
         intent = Intent(this@MainActivity, ImageDetailActivity::class.java)
-        else{ // Some other target activity
-             }
+       /* else{ // Some other target activity
+             }*/
 
         intent?.putExtra(ImageDetailActivity.dataKey.INTENT_DATA, image)
 

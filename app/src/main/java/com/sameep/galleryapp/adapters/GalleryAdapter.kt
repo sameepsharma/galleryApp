@@ -25,6 +25,7 @@ class GalleryAdapter(pictureList: List<PictureFacer>, pictureContx: Context) : R
 
     private val pictureList: List<PictureFacer> = pictureList
     private val pictureContx: Context = pictureContx
+    var glide = Glide.with(pictureContx)
 
     override fun onCreateViewHolder(container: ViewGroup, position: Int): PicHolder {
         val view = LayoutInflater.from(pictureContx).inflate(R.layout.rt_gallery, container, false)
@@ -34,7 +35,7 @@ class GalleryAdapter(pictureList: List<PictureFacer>, pictureContx: Context) : R
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
         val image: PictureFacer = pictureList[position]
         Log.e("MediaType>>>", "${image.mediaType}<<<")
-        Glide.with(pictureContx)
+        glide
             .load(image.picturePath)
             .apply(RequestOptions().centerCrop())
             .into(holder.picture)
