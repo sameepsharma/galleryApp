@@ -20,7 +20,7 @@ import com.sameep.galleryapp.singletons.GlideInstance
 open interface onAdapterItemClickListener {
     fun onItemClick(item: PictureFacer)
 }
-class GalleryAdapter(val pictureList: List<PictureFacer>, val pictureContx: Context) : RecyclerView.Adapter<PicHolder>(){
+class GalleryAdapter(var pictureList: List<PictureFacer>?, val pictureContx: Context) : RecyclerView.Adapter<PicHolder>(){
 
 
     var onClickRef: onAdapterItemClickListener? = null
@@ -33,34 +33,40 @@ class GalleryAdapter(val pictureList: List<PictureFacer>, val pictureContx: Cont
     }
 
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
-        val image: PictureFacer = pictureList[position]
+        pictureList?.let {
+            val image: PictureFacer = pictureList!![position]
 
-        glide
-            .load(image.picturePath)
-            .apply(RequestOptions().centerCrop())
-            .into(holder.picture)
-        //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
+            glide
+                .load(image.picturePath)
+                .apply(RequestOptions().centerCrop())
+                .into(holder.picture)
+            //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
 
-        if (image.mediaType == 1)
-            holder.type.setBackgroundResource(R.drawable.ic_photo)
-        else if (image.mediaType == 3)
-            holder.type.setBackgroundResource(R.drawable.ic_video)
+            if (image.mediaType == 1)
+                holder.type.setBackgroundResource(R.drawable.ic_photo)
+            else if (image.mediaType == 3)
+                holder.type.setBackgroundResource(R.drawable.ic_video)
 
-        holder.name.text = image.picturName
+            holder.name.text = image.picturName
 
-        holder.picture.setOnClickListener {
+            holder.picture.setOnClickListener {
 
-            onClickRef?.onItemClick(image)
+                onClickRef?.onItemClick(image)
 
 
+            }
         }
+
 
     }
 
 
 
     override fun getItemCount(): Int {
-        return pictureList.size
+        if (pictureList != null) {
+            return pictureList!!.size
+        }else
+            return 0
     }
 
 }

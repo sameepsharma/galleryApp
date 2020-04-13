@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 
 private const val REQUEST_PERMISSIONS = 1001
 private lateinit var mainViewModel: MainViewModel
+lateinit var galleryAdapter:GalleryAdapter
 
 class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
             launchCoroutineForMedia()
             setUpObserver()
         } else
-            checkpermission()
+            getpermission()
         //getMedia()
 
 
@@ -59,7 +60,6 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
     }
 
     private fun setUpObserver() {
-
         mainViewModel.getAllMedia().observe(this, Observer {
             setAdapter(it)
         })
@@ -79,9 +79,8 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
     private fun setAdapter(data: List<PictureFacer>) {
 
-        val adapterTwo = GalleryAdapter(data, this)
-        adapterTwo.onClickRef = this
-        main_rv.adapter = adapterTwo
+        galleryAdapter.pictureList=data
+        galleryAdapter.notifyDataSetChanged()
         main_loader.visibility = View.GONE
     }
 
@@ -91,6 +90,10 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
         val layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
         main_rv.layoutManager = layoutManager
         main_rv.hasFixedSize()
+        galleryAdapter= GalleryAdapter(null, this@MainActivity)
+        galleryAdapter.onClickRef = this@MainActivity
+        main_rv.adapter = galleryAdapter
+
 
         main_swipe.setOnRefreshListener {
             main_loader.visibility = View.VISIBLE
@@ -103,7 +106,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
     }
 
-    private fun checkpermission() {
+    private fun getpermission() {
         requestPermissions(
             this@MainActivity,
             arrayOf(
