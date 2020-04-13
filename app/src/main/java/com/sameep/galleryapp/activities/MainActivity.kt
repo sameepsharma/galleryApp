@@ -18,16 +18,21 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
+import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.PictureFacer
 import com.sameep.galleryapp.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 private const val REQUEST_PERMISSIONS = 1001
 private lateinit var mainViewModel: MainViewModel
 
-class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
+class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +42,20 @@ class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
 
         setupViews()
         if (hasPermission()) {
-            mainViewModel.loadMedia()
+            //mainViewModel.loadMedia()
+            launchCoroutineForMedia()
             setUpObserver()
         } else
             checkpermission()
         //getMedia()
 
 
+    }
+
+    private fun launchCoroutineForMedia() {
+        CoroutineScope(IO).launch {
+            mainViewModel.getMedia()
+        }
     }
 
     private fun setUpObserver() {
@@ -68,7 +80,7 @@ class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
     private fun setAdapter(data: List<PictureFacer>) {
 
         val adapterTwo = GalleryAdapter(data, this)
-        adapterTwo.delegate=this
+        adapterTwo.onClickRef = this
         main_rv.adapter = adapterTwo
         main_loader.visibility = View.GONE
     }
@@ -83,7 +95,8 @@ class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
         main_swipe.setOnRefreshListener {
             main_loader.visibility = View.VISIBLE
 
-            mainViewModel.loadMedia()
+            //mainViewModel.loadMedia()
+            launchCoroutineForMedia()
 
             main_swipe.isRefreshing = false
         }
@@ -110,20 +123,21 @@ class MainActivity : AppCompatActivity(), GalleryAdapter.onClickItem {
         when (requestCode) {
             REQUEST_PERMISSIONS -> {
 
-                mainViewModel.loadMedia()
+                //mainViewModel.loadMedia()
+                launchCoroutineForMedia()
                 setUpObserver()
             }
         }
     }
 
-    override fun fireIntent(image: PictureFacer) {
-        var intent:Intent?=null
-       // if (image.mediaType==1)
+    override fun onItemClick(image: PictureFacer) {
+        var intent: Intent? = null
+        // if (image.mediaType==1)
         intent = Intent(this@MainActivity, ImageDetailActivity::class.java)
-       /* else{ // Some other target activity
-             }*/
+        /* else{ // Some other target activity
+              }*/
 
-        intent?.putExtra(ImageDetailActivity.dataKey.INTENT_DATA, image)
+        intent?.putExtra(ImageDetailActivity.INTENT_DATA, image)
 
         startActivity(intent)
     }

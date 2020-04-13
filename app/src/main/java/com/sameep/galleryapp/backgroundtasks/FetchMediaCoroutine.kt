@@ -3,33 +3,14 @@ package com.sameep.galleryapp.backgroundtasks
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.AsyncTask
 import android.provider.MediaStore
 import android.util.Log
 import com.sameep.galleryapp.dataclasses.PictureFacer
-//Get Result
-open interface ResultListener {
-    fun getResult(resultMedia: List<PictureFacer>?)
-}
-open class FetchMediaTask internal constructor(val context: Context) :
-    AsyncTask<Unit, Unit, List<PictureFacer>>() {
 
+class FetchMediaCoroutine {
 
-
-    var resultRef: ResultListener? = null
-
-    override fun doInBackground(vararg params: Unit?): List<PictureFacer> {
-        return getAllMedia()
-    }
-
-    override fun onPostExecute(result: List<PictureFacer>) {
-        super.onPostExecute(result)
-
-        resultRef?.getResult(result)
-        //MainViewModel.allMedia.value = result
-    }
-
-    fun getAllMedia(): List<PictureFacer> {
+    companion object{
+    fun getAllMedia(context: Context): List<PictureFacer> {
         val columns = arrayOf(
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -80,6 +61,5 @@ open class FetchMediaTask internal constructor(val context: Context) :
 
         Log.e("BeforeSize>>>", "${images.size}<<<")
         return images
-    }
-
+    }}
 }

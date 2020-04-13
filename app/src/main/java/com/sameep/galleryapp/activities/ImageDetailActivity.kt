@@ -7,23 +7,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.singletons.GlideInstance
 import kotlinx.android.synthetic.main.activity_image_detail.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ImageDetailActivity : AppCompatActivity() {
 
-    object dataKey {
+    companion object {
         val INTENT_DATA = "INTENT_DATA"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_detail)
-        val extra_data = intent.getParcelableExtra<PictureFacer>(dataKey.INTENT_DATA)
+        val extra_data = intent.getParcelableExtra<PictureFacer>(INTENT_DATA)
 
         extra_data.let {
-            Glide.with(this)
+            GlideInstance.getGlide(this)
                 .load(extra_data.picturePath)
                 .into(detail_iv)
             detail_tv_date.text = getDate(extra_data.date.toLong(), "MMM dd, yyyy hh:mm:ss.SSS")

@@ -15,17 +15,17 @@ import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
 import com.sameep.galleryapp.viewholders.PicHolder
 import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.singletons.GlideInstance
 
-class GalleryAdapter(pictureList: List<PictureFacer>, pictureContx: Context) : RecyclerView.Adapter<PicHolder>(){
+open interface onAdapterItemClickListener {
+    fun onItemClick(item: PictureFacer)
+}
+class GalleryAdapter(val pictureList: List<PictureFacer>, val pictureContx: Context) : RecyclerView.Adapter<PicHolder>(){
 
-    open interface onClickItem {
-        fun fireIntent(item: PictureFacer)
-    }
-    var delegate: onClickItem? = null
 
-    private val pictureList: List<PictureFacer> = pictureList
-    private val pictureContx: Context = pictureContx
-    var glide = Glide.with(pictureContx)
+    var onClickRef: onAdapterItemClickListener? = null
+
+    var glide = GlideInstance.getGlide(pictureContx)
 
     override fun onCreateViewHolder(container: ViewGroup, position: Int): PicHolder {
         val view = LayoutInflater.from(pictureContx).inflate(R.layout.rt_gallery, container, false)
@@ -34,7 +34,7 @@ class GalleryAdapter(pictureList: List<PictureFacer>, pictureContx: Context) : R
 
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
         val image: PictureFacer = pictureList[position]
-        Log.e("MediaType>>>", "${image.mediaType}<<<")
+
         glide
             .load(image.picturePath)
             .apply(RequestOptions().centerCrop())
@@ -50,7 +50,7 @@ class GalleryAdapter(pictureList: List<PictureFacer>, pictureContx: Context) : R
 
         holder.picture.setOnClickListener {
 
-            delegate?.fireIntent(image)
+            onClickRef?.onItemClick(image)
 
 
         }
