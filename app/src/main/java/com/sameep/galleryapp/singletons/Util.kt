@@ -4,7 +4,7 @@ import android.content.Context
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 
-class GlideInstance() {
+class Util() {
 
     companion object {
         private var GLIDEREF:RequestManager?=null

@@ -41,10 +41,11 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
         mainViewModel = MainViewModel(application)
 
+
         setupViews()
         if (hasPermission()) {
             //mainViewModel.loadMedia()
-            launchCoroutineForMedia()
+            callForMedia()
             setUpObserver()
         } else
             getpermission()
@@ -53,15 +54,16 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
     }
 
-    private fun launchCoroutineForMedia() {
-        CoroutineScope(IO).launch {
+    private fun callForMedia() {
+       // CoroutineScope(IO).launch {
+
             mainViewModel.getMedia()
-        }
+        //}
     }
 
     private fun setUpObserver() {
         mainViewModel.getAllMedia().observe(this, Observer {
-            setAdapter(it)
+            updateList(it)
         })
     }
 
@@ -77,10 +79,9 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
                 )
     }
 
-    private fun setAdapter(data: List<PictureFacer>) {
+    private fun updateList(data: List<PictureFacer>) {
 
-        galleryAdapter.pictureList=data
-        galleryAdapter.notifyDataSetChanged()
+        galleryAdapter.setPictureList(data)
         main_loader.visibility = View.GONE
     }
 
@@ -90,8 +91,10 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
         val layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
         main_rv.layoutManager = layoutManager
         main_rv.hasFixedSize()
-        galleryAdapter= GalleryAdapter(null, this@MainActivity)
-        galleryAdapter.onClickRef = this@MainActivity
+        galleryAdapter= GalleryAdapter(emptyList(), this@MainActivity).apply {
+            onClickRef=this@MainActivity
+        }
+
         main_rv.adapter = galleryAdapter
 
 
@@ -99,7 +102,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
             main_loader.visibility = View.VISIBLE
 
             //mainViewModel.loadMedia()
-            launchCoroutineForMedia()
+            callForMedia()
 
             main_swipe.isRefreshing = false
         }
@@ -127,7 +130,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
             REQUEST_PERMISSIONS -> {
 
                 //mainViewModel.loadMedia()
-                launchCoroutineForMedia()
+                callForMedia()
                 setUpObserver()
             }
         }

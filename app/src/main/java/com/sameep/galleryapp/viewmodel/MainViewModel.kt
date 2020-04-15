@@ -1,29 +1,21 @@
 package com.sameep.galleryapp.viewmodel
 
 import android.app.Application
-import android.content.Context
-import android.database.Cursor
-import android.net.Uri
-import android.os.AsyncTask
-import android.provider.MediaStore
-import android.util.Log
-import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.sameep.galleryapp.activities.MainActivity
-import com.sameep.galleryapp.backgroundtasks.FetchMediaCoroutine
-import com.sameep.galleryapp.backgroundtasks.FetchMediaTask
-import com.sameep.galleryapp.backgroundtasks.ResultListener
+import androidx.lifecycle.viewModelScope
+import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
+import com.sameep.galleryapp.backgroundtasks.FetchMediaModule.Companion.getAllMedia
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class MainViewModel( applicationRef: Application) : AndroidViewModel(applicationRef)//, ResultListener
- {
+class MainViewModel(applicationRef: Application) :
+    AndroidViewModel(applicationRef)//, ResultListener
+{
 
 //    val task = FetchMediaTask(applicationRef)
 
@@ -33,13 +25,15 @@ class MainViewModel( applicationRef: Application) : AndroidViewModel(application
         return allMedia
     }
 
-     suspend fun getMedia(){
+    fun getMedia() {
+        var value = emptyList<PictureFacer>()
+        viewModelScope.launch {
+            value = getAllMedia(getApplication())
+        }
 
-         val value = FetchMediaCoroutine.getAllMedia(getApplication())
-         withContext(Main){
-             allMedia.value=value
-         }
-     }
+        allMedia.value = value
+
+    }
 
     /*fun loadMedia() {
         task.resultRef=this
