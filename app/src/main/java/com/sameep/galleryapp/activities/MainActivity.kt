@@ -25,6 +25,7 @@ import com.sameep.galleryapp.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -56,7 +57,6 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
 
     private fun callForMedia() {
        // CoroutineScope(IO).launch {
-
             mainViewModel.getMedia()
         //}
     }

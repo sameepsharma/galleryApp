@@ -26,12 +26,12 @@ class MainViewModel(applicationRef: Application) :
     }
 
     fun getMedia() {
-        var value = emptyList<PictureFacer>()
+
         viewModelScope.launch {
-            value = getAllMedia(getApplication())
+            allMedia.value = getAllMedia(getApplication())
         }
 
-        allMedia.value = value
+         //= value
 
     }
 
