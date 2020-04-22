@@ -14,8 +14,6 @@ class FetchMediaModule {
     companion object {
         suspend fun getAllMedia(context: Context): List<PictureFacer> {
 
-           return withContext(Dispatchers.IO){
-
                val columns = arrayOf(
                    MediaStore.Files.FileColumns._ID,
                    MediaStore.Files.FileColumns.DATA,
@@ -64,8 +62,7 @@ class FetchMediaModule {
                    }
                }
 
-               images
-           }
+              return images
         }
 
             }

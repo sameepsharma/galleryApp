@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GalleryApp</string>
+    <string name="title_activity_tab">TabActivity</string>
+    <string name="title_home">Local Media</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="home_det_arg">INTENT_DATA</string>
 </resources>

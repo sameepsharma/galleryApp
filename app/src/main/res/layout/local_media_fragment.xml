@@ -9,17 +9,17 @@
     android:padding="15dp">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/main_swipe"
+        android:id="@+id/frag_swipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/main_rv"
+            android:id="@+id/frag_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <ProgressBar
-        android:id="@+id/main_loader"
+        android:id="@+id/frag_loader"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:visibility="gone"

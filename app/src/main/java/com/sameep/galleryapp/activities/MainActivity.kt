@@ -1,15 +1,9 @@
 package com.sameep.galleryapp.activities
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.*
@@ -21,13 +15,9 @@ import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
 import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.singletons.InstanceProvider
 import com.sameep.galleryapp.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 private const val REQUEST_PERMISSIONS = 1001
@@ -91,7 +81,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
         val layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
         main_rv.layoutManager = layoutManager
         main_rv.hasFixedSize()
-        galleryAdapter= GalleryAdapter(emptyList(), this@MainActivity).apply {
+        galleryAdapter= GalleryAdapter(emptyList(), this@MainActivity, InstanceProvider.getGlide(this@MainActivity)).apply {
             onClickRef=this@MainActivity
         }
 
@@ -143,7 +133,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
         /* else{ // Some other target activity
               }*/
 
-        intent?.putExtra(ImageDetailActivity.INTENT_DATA, image)
+        intent.putExtra(ImageDetailActivity.INTENT_DATA, image)
 
         startActivity(intent)
     }

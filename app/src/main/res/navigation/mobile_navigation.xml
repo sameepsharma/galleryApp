@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.sameep.galleryapp.fragments.LocalMediaFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/local_media_fragment">
+        <action
+            android:id="@+id/home_to_detail"
+            app:destination="@id/navigation_detail">
+
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="com.sameep.galleryapp.activities.ui.dashboard.DashboardFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+
+    <activity android:id="@+id/navigation_detail"
+        android:name="com.sameep.galleryapp.activities.ImageDetailActivity">
+        <argument
+            android:name="@string/home_det_arg"
+            app:argType="com.sameep.galleryapp.dataclasses.PictureFacer"
+            app:nullable="false" />
+    </activity>
+
+</navigation>

@@ -4,24 +4,26 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
 
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.viewholders.PicHolder
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import com.sameep.galleryapp.singletons.Util
 
-open interface onAdapterItemClickListener {
+interface onAdapterItemClickListener {
     fun onItemClick(item: PictureFacer)
 }
 
-class GalleryAdapter(private var pictureList: List<PictureFacer>?,private val pictureContx: Context) :
+class GalleryAdapter(
+    private var pictureList: List<PictureFacer>?,
+    private val pictureContx: Context,
+    private val glide: RequestManager
+) :
     RecyclerView.Adapter<PicHolder>() {
 
 
     var onClickRef: onAdapterItemClickListener? = null
-
-    var glide = Util.getGlide(pictureContx)
 
     fun setPictureList(list:List<PictureFacer>){
         this.pictureList=list

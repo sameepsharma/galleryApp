@@ -17,8 +17,6 @@ class MainViewModel(applicationRef: Application) :
     AndroidViewModel(applicationRef)//, ResultListener
 {
 
-//    val task = FetchMediaTask(applicationRef)
-
     private var allMedia = MutableLiveData<List<PictureFacer>>()
 
     fun getAllMedia(): LiveData<List<PictureFacer>> {
@@ -31,7 +29,7 @@ class MainViewModel(applicationRef: Application) :
             allMedia.value = getAllMedia(getApplication())
         }
 
-         //= value
+        //= value
 
     }
 
