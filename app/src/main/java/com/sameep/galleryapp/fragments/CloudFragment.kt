@@ -26,8 +26,8 @@ class CloudFragment : Fragment(), onCloudAdapterItemClickListener {
 
     private val retroObj = RetrofitProvider.getRetrofit()
     private lateinit var dashboardViewModel: CloudViewModel
-    private var key : String?="8b766ab7b7e827c11516eb191be5f8a1"
     private lateinit var cloudAdapter : CloudPhotosAdapter
+
 
 
     override fun onCreateView(

@@ -20,13 +20,15 @@ class CloudViewModel : ViewModel() {
     private val COLUMN_PHOTO = "photo"
     private val COLUMN_PHOTOS = "photos"
     private var flickrResp = MutableLiveData<ArrayList<PhotoModel>>()
+    private val key : String="8b766ab7b7e827c11516eb191be5f8a1"
+
 
     fun getMediaFromFlickr(retrofit: Retrofit) {
         viewModelScope.launch {
             val service = retrofit.create(ApiInterface::class.java)
 
             withContext(IO) {
-                val response = service.getMediaFromFlickr()
+                val response = service.getMediaFromFlickr(key)
                 response?.let {
                     if (it.isSuccessful) {
                         Log.e("Succcessfull >> ", "YES <<<")
