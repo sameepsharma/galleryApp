@@ -19,9 +19,23 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.sameep.galleryapp.activities.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="com.sameep.galleryapp.fragments.CloudFragment"
+        android:label="Cloud"
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/cloud_to_detail"
+            app:destination="@id/nav_cloud_det"/>
+
+    </fragment>
+
+
+    <activity android:id="@+id/nav_cloud_det"
+        android:name="com.sameep.galleryapp.activities.CloudDetailActivity">
+        <argument
+            android:name="@string/cloud_det_arg"
+            app:argType="com.sameep.galleryapp.dataclasses.PhotoModel"
+            app:nullable="false" />
+    </activity>
 
 
     <activity android:id="@+id/navigation_detail"

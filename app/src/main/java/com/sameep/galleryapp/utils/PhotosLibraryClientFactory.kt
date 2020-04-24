@@ -16,7 +16,6 @@
 
 package com.sameep.galleryapp.utils
 
-import android.app.Application
 import com.google.api.gax.core.FixedCredentialsProvider
 import com.google.auth.Credentials
 import com.google.auth.oauth2.AccessToken
@@ -24,8 +23,6 @@ import com.google.auth.oauth2.UserCredentials
 import com.google.photos.library.v1.PhotosLibraryClient
 import com.google.photos.library.v1.PhotosLibrarySettings
 import java.io.IOException
-import org.json.JSONException
-import org.json.JSONObject
 
 object PhotosLibraryClientFactory {
 

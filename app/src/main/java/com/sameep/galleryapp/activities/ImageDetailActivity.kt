@@ -1,10 +1,10 @@
 package com.sameep.galleryapp.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import com.sameep.galleryapp.singletons.InstanceProvider
+import com.sameep.galleryapp.singletons.GlideProvider
 import kotlinx.android.synthetic.main.activity_image_detail.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,7 +22,7 @@ class ImageDetailActivity : AppCompatActivity() {
         val extra_data = bundle?.getParcelable<PictureFacer>(INTENT_DATA)
 
         extra_data?.let {
-            InstanceProvider.getGlide(this)
+            GlideProvider.getGlide(this)
                 .load(extra_data.picturePath)
                 .into(detail_iv)
             detail_tv_date.text = getDate(extra_data.date.toLong(), "MMM dd, yyyy hh:mm:ss.SSS")

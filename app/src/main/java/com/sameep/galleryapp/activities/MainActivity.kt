@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat.*
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,7 +15,7 @@ import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
 import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import com.sameep.galleryapp.singletons.InstanceProvider
+import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), onAdapterItemClickListener {
         val layoutManager = GridLayoutManager(this, 2, RecyclerView.VERTICAL, false)
         main_rv.layoutManager = layoutManager
         main_rv.hasFixedSize()
-        galleryAdapter= GalleryAdapter(emptyList(), this@MainActivity, InstanceProvider.getGlide(this@MainActivity)).apply {
+        galleryAdapter= GalleryAdapter(emptyList(), this@MainActivity, GlideProvider.getGlide(this@MainActivity)).apply {
             onClickRef=this@MainActivity
         }
 

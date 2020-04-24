@@ -36,7 +36,7 @@ android {
         jvmTarget = "1.8"
     }
 
-    packagingOptions{
+    packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
@@ -48,6 +48,10 @@ android {
 
         exclude 'META-INF/io.netty.versions.properties'
         exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/native-image/io.netty/codec-http/native-image.properties'
+        exclude 'META-INF/native-image/io.netty/transport/native-image.properties'
+        exclude 'META-INF/native-image/io.netty/codec-http2/native-image.properties'
+        exclude 'META-INF/native-image/io.netty/transport/reflection-config.json'
     }
 
 }
@@ -90,16 +94,6 @@ dependencies {
     implementation 'com.google.photos.library:google-photos-library-client:1.5.0'
     //OkHttp
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
-    implementation 'io.grpc:grpc-netty:1.10.1'
-    implementation 'io.grpc:grpc-protobuf:1.10.1'
-    implementation 'io.grpc:grpc-stub:1.10.1'
-    implementation 'io.grpc:grpc-okhttp:1.10.1'
-
-    implementation 'com.borax12.materialdaterangepicker:library:1.9'
-    implementation 'com.wang.avi:library:2.1.3'
-
-
-
 
 
 }

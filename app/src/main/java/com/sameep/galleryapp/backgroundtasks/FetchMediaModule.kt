@@ -6,8 +6,6 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class FetchMediaModule {
 

@@ -4,12 +4,12 @@ package com.sameep.galleryapp.fragments
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,7 +19,7 @@ import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import com.sameep.galleryapp.singletons.InstanceProvider
+import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.LocalMediaViewModel
 import kotlinx.android.synthetic.main.local_media_fragment.*
 import kotlinx.android.synthetic.main.local_media_fragment.view.*
@@ -49,8 +49,9 @@ class LocalMediaFragment : Fragment(), onAdapterItemClickListener {
         setupViews(fragView)
         if (hasPermission()) {
             //mainViewModel.loadMedia()
-            callForMedia()
             setUpObserver()
+
+            callForMedia()
         } else
             getpermission()
 
@@ -99,7 +100,7 @@ class LocalMediaFragment : Fragment(), onAdapterItemClickListener {
         val layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
         fragView.frag_rv.layoutManager = layoutManager
         fragView.frag_rv.hasFixedSize()
-        galleryAdapter = GalleryAdapter(emptyList(), requireContext(), InstanceProvider.getGlide(requireContext())).apply {
+        galleryAdapter = GalleryAdapter(emptyList(), requireContext(), GlideProvider.getGlide(requireContext())).apply {
             onClickRef=this@LocalMediaFragment
         }
 
@@ -138,8 +139,9 @@ class LocalMediaFragment : Fragment(), onAdapterItemClickListener {
             REQUEST_PERMISSIONS -> {
 
                 //mainViewModel.loadMedia()
-                callForMedia()
                 setUpObserver()
+
+                callForMedia()
             }
         }
     }

@@ -5,4 +5,5 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="home_det_arg">INTENT_DATA</string>
+    <string name="cloud_det_arg">CLOUD_DATA</string>
 </resources>

@@ -1,7 +1,10 @@
 package com.sameep.galleryapp.rest
 
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiInterface {
 
@@ -10,7 +13,7 @@ interface ApiInterface {
                              , @Field("client_secret") secret : String, @Field("redirect_uri") redirect : String
                              , @Field(""))*/
 
-    @GET("mediaItems/")
-    suspend fun getAllMedia(@Header("Authorization") Authorization: String?) : Response<String>
+    @POST("?format=json&nojsoncallback=1&api_key=8b766ab7b7e827c11516eb191be5f8a1&method=flickr.photos.getRecent")
+    suspend fun getMediaFromFlickr() : Response<JsonObject>
 
 }

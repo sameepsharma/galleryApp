@@ -1,7 +1,10 @@
 package com.sameep.galleryapp.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
 import com.sameep.galleryapp.dataclasses.PictureFacer
 import kotlinx.coroutines.Dispatchers

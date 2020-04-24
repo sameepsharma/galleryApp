@@ -5,12 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
 import com.sameep.galleryapp.backgroundtasks.FetchMediaModule.Companion.getAllMedia
 import com.sameep.galleryapp.dataclasses.PictureFacer
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MainViewModel(applicationRef: Application) :
