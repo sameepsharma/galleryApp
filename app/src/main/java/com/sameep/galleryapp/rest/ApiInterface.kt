@@ -13,7 +13,7 @@ interface ApiInterface {
                              , @Field("client_secret") secret : String, @Field("redirect_uri") redirect : String
                              , @Field(""))*/
 
-    @POST("?format=json&nojsoncallback=1&method=flickr.photos.getRecent")
+    @POST("?format=json&nojsoncallback=1&method=flickr.photos.getRecent&per_page=500&extras=media")
 
     suspend fun getMediaFromFlickr(@Query("api_key") api_key:String) : Response<JsonObject>
 

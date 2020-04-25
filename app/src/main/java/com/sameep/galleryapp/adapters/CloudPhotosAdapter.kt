@@ -39,6 +39,7 @@ class CloudPhotosAdapter(
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
         pictureList?.let {
             val image: PhotoModel = it[position]
+            Log.e("MediaTypeCloud>>> ", image.media+"<<<")
             val url =  "https://farm${image
                 .farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}_z.jpg"
             if (position==0)

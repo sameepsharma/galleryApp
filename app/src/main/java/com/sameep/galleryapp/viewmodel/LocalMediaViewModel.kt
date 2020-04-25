@@ -1,6 +1,7 @@
 package com.sameep.galleryapp.viewmodel
 
 import android.app.Application
+import android.provider.MediaStore
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,10 +17,15 @@ class LocalMediaViewModel(val appContext: Application) : AndroidViewModel(appCon
     // TODO: Implement the ViewModel
 
 
-    private var allMedia = MutableLiveData<List<PictureFacer>>()
+    private var allImages = MutableLiveData<List<PictureFacer>>()
+    private var allVideos = MutableLiveData<List<PictureFacer>>()
 
-    fun getAllMedia(): LiveData<List<PictureFacer>> {
-        return allMedia
+    fun observeAllImages(): LiveData<List<PictureFacer>> {
+        return allImages
+    }
+
+    fun observeAllVideos(): LiveData<List<PictureFacer>>{
+        return allVideos
     }
 
     fun getMedia() {
@@ -27,17 +33,34 @@ class LocalMediaViewModel(val appContext: Application) : AndroidViewModel(appCon
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val mediaLocal = FetchMediaModule.getAllMedia(appContext)
-                setDataOnMainThread(mediaLocal)
+                mediaLocal?.let {
+                    sortMedia(mediaLocal)
+                }
             }
         }
-
-        //= value
-
     }
 
-    private suspend fun setDataOnMainThread(mediaLocal: List<PictureFacer>) {
+    private suspend fun sortMedia(mediaLocal: List<PictureFacer>) {
+        val imageList = ArrayList<PictureFacer>()
+        val videoList = ArrayList<PictureFacer>()
+        for (i in 0 until mediaLocal.size)
+        {
+            if (mediaLocal.get(i).mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE )
+                imageList.add(mediaLocal.get(i))
+            else
+                videoList.add(mediaLocal.get(i))
+        }
+
+        setDataOnMainThread(imageList, videoList)
+    }
+
+    private suspend fun setDataOnMainThread(
+        imageList: List<PictureFacer>,
+        videoList: List<PictureFacer>
+    ) {
         withContext(Main){
-            allMedia.value=mediaLocal
+            allImages.value=imageList
+            allVideos.value=videoList
         }
     }
 

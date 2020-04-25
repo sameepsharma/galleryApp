@@ -21,14 +21,17 @@
             android:required="false" />
 
         <activity android:name=".activities.TabActivity">
+
+        </activity>
+        <activity android:name=".activities.ImageDetailActivity" />
+        <activity android:name=".activities.MainActivity"></activity>
+        <activity android:name=".activities.TabViewpagerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ImageDetailActivity" />
-        <activity android:name=".activities.MainActivity"></activity>
     </application>
 
 </manifest>

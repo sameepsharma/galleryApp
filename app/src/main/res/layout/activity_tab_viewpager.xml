@@ -7,9 +7,14 @@
     android:orientation="vertical"
     >
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/local_tab"
+        android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:tabMode="fixed"
@@ -18,12 +23,5 @@
         app:tabSelectedTextColor="@android:color/white"
         app:defaultNavHost="true"
         />
-
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/local_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 
 </LinearLayout>

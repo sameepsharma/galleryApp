@@ -1,5 +1,6 @@
 package com.sameep.galleryapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,11 +87,10 @@ class CloudFragment : Fragment(), onCloudAdapterItemClickListener {
         val bundle = Bundle()
         bundle.putParcelable(CloudDetailActivity.CLOUD_DATA, item)
 
-        /*val intent = Intent(requireContext(), CloudDetailActivity::class.java)
+        val intent = Intent(requireContext(), CloudDetailActivity::class.java)
         intent.putExtra(CloudDetailActivity.CLOUD_DATA, item)
-        */
+        startActivity(intent)
 
-        Navigation.findNavController(requireView()).navigate(R.id.cloud_to_detail, bundle)
 
     }
 }
