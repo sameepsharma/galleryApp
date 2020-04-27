@@ -7,15 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
+import com.sameep.galleryapp.dataclasses.ImageToShow
 import com.sameep.galleryapp.dataclasses.PictureFacer
 import com.sameep.galleryapp.viewholders.PicHolder
 
 interface onAdapterItemClickListener {
-    fun onItemClick(item: PictureFacer)
+    fun onItemClick(item: ImageToShow)
 }
 
 class GalleryAdapter(
-    private var pictureList: List<PictureFacer>?,
+    private var pictureList: List<ImageToShow>?,
     private val pictureContx: Context,
     private val glide: RequestManager
 ) :
@@ -24,7 +25,7 @@ class GalleryAdapter(
 
     var onClickRef: onAdapterItemClickListener? = null
 
-    fun setPictureList(list:List<PictureFacer>){
+    fun setPictureList(list:List<ImageToShow>){
         this.pictureList=list
         notifyDataSetChanged()
     }
@@ -36,20 +37,20 @@ class GalleryAdapter(
 
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
         pictureList?.let {
-            val image: PictureFacer = it[position]
+            val image: ImageToShow = it[position]
 
             glide
-                .load(image.picturePath)
+                .load(image.url)
                 .apply(RequestOptions().centerCrop())
                 .into(holder.picture)
             //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
 
-            if (image.mediaType == 1)
+            if (image.type == 1)
                 holder.type.setBackgroundResource(R.drawable.ic_photo)
-            else if (image.mediaType == 3)
+            else if (image.type == 3)
                 holder.type.setBackgroundResource(R.drawable.ic_video)
 
-            holder.name.text = image.picturName
+            holder.name.text = image.name
 
             holder.picture.setOnClickListener {
 

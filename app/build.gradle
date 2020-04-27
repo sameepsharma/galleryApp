@@ -81,17 +81,11 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    //OAuth
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
     //Retrofit
     //implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version'
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.0.0'
-    //GooglePhotos
-    implementation 'com.google.photos.library:google-photos-library-client:1.5.0'
+
     //OkHttp
     implementation 'com.squareup.okhttp:okhttp:2.6.0'
 

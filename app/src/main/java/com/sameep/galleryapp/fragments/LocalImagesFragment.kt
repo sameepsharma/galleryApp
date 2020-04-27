@@ -18,6 +18,7 @@ import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
+import com.sameep.galleryapp.dataclasses.ImageToShow
 import com.sameep.galleryapp.dataclasses.PictureFacer
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.LocalMediaViewModel
@@ -27,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_images.view.*
 /**
  * A simple [Fragment] subclass.
  */
-class LocalImagesFragment : Fragment(), onAdapterItemClickListener {
+class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickListener {
 
     private val REQUEST_PERMISSIONS = 1001
     private lateinit var viewModel: LocalMediaViewModel
@@ -44,9 +45,7 @@ class LocalImagesFragment : Fragment(), onAdapterItemClickListener {
 
         setupViews(fragView)
         if (hasPermission()) {
-            //mainViewModel.loadMedia()
             setUpObserver()
-
             callForMedia()
         } else
             getpermission()
@@ -67,9 +66,14 @@ class LocalImagesFragment : Fragment(), onAdapterItemClickListener {
     }
 
     private fun setUpObserver() {
+        if (isImage)
         viewModel.observeAllImages().observe(requireActivity(), Observer {
             updateList(it)
         })
+        else
+            viewModel.observeAllVideos().observe(requireActivity(), Observer {
+                updateList(it)
+            })
     }
 
     private fun hasPermission(): Boolean {
@@ -84,7 +88,7 @@ class LocalImagesFragment : Fragment(), onAdapterItemClickListener {
                 )
     }
 
-    private fun updateList(data: List<PictureFacer>) {
+    private fun updateList(data: List<ImageToShow>) {
 
         galleryAdapter.setPictureList(data)
         frag_loader.visibility = View.GONE
@@ -142,7 +146,7 @@ class LocalImagesFragment : Fragment(), onAdapterItemClickListener {
         }
     }
 
-    override fun onItemClick(image: PictureFacer) {
+    override fun onItemClick(image: ImageToShow) {
 
         val bundle = Bundle()
         bundle.putParcelable(ImageDetailActivity.INTENT_DATA, image)

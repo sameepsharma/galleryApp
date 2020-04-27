@@ -9,7 +9,7 @@ class MyViewPagerStateAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm
     val fragmentTitleList:MutableList<String> = ArrayList<String>()
 
     override fun getItem(position: Int): Fragment {
-        return fragmentList.get(position)
+        return fragmentList[position]
     }
 
     override fun getCount(): Int {

@@ -30,8 +30,8 @@ class LocalMediaFragment : Fragment() {
 
         val adapter = MyViewPagerStateAdapter(childFragmentManager)
         //add fragments to viewPager
-        val images = LocalImagesFragment()
-        val videos = LocalVideosFragment()
+        val images = LocalImagesFragment(true)
+        val videos = LocalImagesFragment(false)
         adapter.addFragment(images, "Images")
         adapter.addFragment(videos, "Videos")
 

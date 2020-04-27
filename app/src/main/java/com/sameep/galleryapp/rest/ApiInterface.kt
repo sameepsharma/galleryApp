@@ -1,6 +1,8 @@
 package com.sameep.galleryapp.rest
 
 import com.google.gson.JsonObject
+import com.sameep.galleryapp.dataclasses.FlickrResp
+import com.sameep.galleryapp.dataclasses.Photos
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.POST
@@ -14,7 +16,9 @@ interface ApiInterface {
                              , @Field(""))*/
 
     @POST("?format=json&nojsoncallback=1&method=flickr.photos.getRecent&per_page=500&extras=media")
+    suspend fun getMediaFromFlickr(@Query("api_key") api_key:String) : Response<FlickrResp>
 
-    suspend fun getMediaFromFlickr(@Query("api_key") api_key:String) : Response<JsonObject>
+    @POST("?format=json&nojsoncallback=1&method=flickr.photos.search&media=video&per_page=10&extras=media,url_z")
+    suspend fun getVideoSearchResult(@Query("api_key") api_key:String) : Response<FlickrResp>
 
 }
