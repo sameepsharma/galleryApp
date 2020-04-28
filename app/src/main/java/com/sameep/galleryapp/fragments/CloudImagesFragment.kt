@@ -13,7 +13,7 @@ import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
 import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
-import com.sameep.galleryapp.dataclasses.ImageToShow
+import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.rest.ApiInterface
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.singletons.RetrofitProvider
@@ -84,14 +84,14 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
     }
 
     private fun updateList(
-        it: List<ImageToShow>,
+        it: List<Media>,
         view: View
     ) {
        cloudAdapter.setPictureList(it)
         view.cloud_progress.visibility=View.GONE
             }
 
-    override fun onItemClick(item: ImageToShow) {
+    override fun onItemClick(item: Media) {
 
         val intent = Intent(requireContext(), ImageDetailActivity::class.java)
         intent.putExtra(ImageDetailActivity.INTENT_DATA, item)

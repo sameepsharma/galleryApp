@@ -18,8 +18,7 @@ import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
-import com.sameep.galleryapp.dataclasses.ImageToShow
-import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.LocalMediaViewModel
 import kotlinx.android.synthetic.main.fragment_images.*
@@ -41,7 +40,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
 
         val fragView = inflater.inflate(R.layout.fragment_images, container, false)
 
-        viewModel = LocalMediaViewModel(requireActivity().application)
+        viewModel = LocalMediaViewModel(requireActivity().application, isImage)
 
         setupViews(fragView)
         if (hasPermission()) {
@@ -66,14 +65,9 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
     }
 
     private fun setUpObserver() {
-        if (isImage)
-        viewModel.observeAllImages().observe(requireActivity(), Observer {
+        viewModel.observeAllMedia().observe(requireActivity(), Observer {
             updateList(it)
         })
-        else
-            viewModel.observeAllVideos().observe(requireActivity(), Observer {
-                updateList(it)
-            })
     }
 
     private fun hasPermission(): Boolean {
@@ -88,7 +82,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
                 )
     }
 
-    private fun updateList(data: List<ImageToShow>) {
+    private fun updateList(data: List<Media>) {
 
         galleryAdapter.setPictureList(data)
         frag_loader.visibility = View.GONE
@@ -109,10 +103,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
 
         fragView.frag_swipe.setOnRefreshListener {
             fragView.frag_loader.visibility = View.VISIBLE
-
-            //mainViewModel.loadMedia()
             callForMedia()
-
             fragView.frag_swipe.isRefreshing = false
         }
 
@@ -146,7 +137,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         }
     }
 
-    override fun onItemClick(image: ImageToShow) {
+    override fun onItemClick(image: Media) {
 
         val bundle = Bundle()
         bundle.putParcelable(ImageDetailActivity.INTENT_DATA, image)

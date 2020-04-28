@@ -5,8 +5,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
 class MyViewPagerStateAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
-    val fragmentList:MutableList<Fragment> = ArrayList<Fragment>()
-    val fragmentTitleList:MutableList<String> = ArrayList<String>()
+    private val fragmentList = mutableListOf<Fragment>()
+    private val fragmentTitleList = mutableListOf<String>()
 
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]

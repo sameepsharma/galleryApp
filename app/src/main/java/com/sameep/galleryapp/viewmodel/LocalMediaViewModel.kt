@@ -7,71 +7,52 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
-import com.sameep.galleryapp.dataclasses.ImageToShow
-import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.dataclasses.Media
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LocalMediaViewModel(val appContext: Application) : AndroidViewModel(appContext) {
+class LocalMediaViewModel(val appContext: Application, val isImage: Boolean) :
+    AndroidViewModel(appContext) {
     // TODO: Implement the ViewModel
 
 
-    private var allImages = MutableLiveData<List<ImageToShow>>()
-    private var allVideos = MutableLiveData<List<ImageToShow>>()
+    private var allMedia = MutableLiveData<List<Media>>()
 
-    fun observeAllImages(): LiveData<List<ImageToShow>> {
-        return allImages
+
+    fun observeAllMedia(): LiveData<List<Media>> {
+        return allMedia
     }
 
-    fun observeAllVideos(): LiveData<List<ImageToShow>>{
-        return allVideos
-    }
 
     fun getMedia() {
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val mediaLocal = FetchMediaModule.getAllMedia(appContext)
-                mediaLocal?.let {
-                    sortMedia(mediaLocal)
+                var mediaList = listOf<Media>()
+                if (isImage) {
+                    mediaList = FetchMediaModule.getAllMedia(
+                        appContext,
+                        MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+                    )
+                } else {
+                    mediaList = FetchMediaModule.getAllMedia(
+                        appContext,
+                        MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO
+                    )
+
                 }
+                setDataOnMainThread(mediaList)
             }
-        }
     }
+}
 
-    private suspend fun sortMedia(mediaLocal: List<PictureFacer>) {
-        val imageList = ArrayList<ImageToShow>()
-        val videoList = ArrayList<ImageToShow>()
-        for (i in 0 until mediaLocal.size)
-        {
-            val localObj = mediaLocal[i]
-            if (localObj.mediaType == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE )
-                {
-
-                    //imageList.add(localObj)
-                    val obj = ImageToShow(localObj.picturName,localObj.picturePath, localObj.mediaType)
-                    imageList.add(obj)
-                }
-            else{
-                val obj = ImageToShow(localObj.picturName, localObj.picturePath, localObj.mediaType)
-                videoList.add(obj)
-            }
-        }
-
-        setDataOnMainThread(imageList, videoList)
+private suspend fun setDataOnMainThread(localMedia: List<Media>) {
+    withContext(Main) {
+        allMedia.value=localMedia
     }
-
-    private suspend fun setDataOnMainThread(
-        imageList: List<ImageToShow>,
-        videoList: List<ImageToShow>
-    ) {
-        withContext(Main){
-            allImages.value=imageList
-            allVideos.value=videoList
-        }
-    }
+}
 
 
 }

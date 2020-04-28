@@ -7,16 +7,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
-import com.sameep.galleryapp.dataclasses.ImageToShow
-import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.viewholders.PicHolder
 
 interface onAdapterItemClickListener {
-    fun onItemClick(item: ImageToShow)
+    fun onItemClick(item: Media)
 }
 
 class GalleryAdapter(
-    private var pictureList: List<ImageToShow>?,
+    private var pictureList: List<Media>?,
     private val pictureContx: Context,
     private val glide: RequestManager
 ) :
@@ -25,7 +24,7 @@ class GalleryAdapter(
 
     var onClickRef: onAdapterItemClickListener? = null
 
-    fun setPictureList(list:List<ImageToShow>){
+    fun setPictureList(list:List<Media>){
         this.pictureList=list
         notifyDataSetChanged()
     }
@@ -37,10 +36,10 @@ class GalleryAdapter(
 
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
         pictureList?.let {
-            val image: ImageToShow = it[position]
+            val image: Media = it[position]
 
             glide
-                .load(image.url)
+                .load(image.thumbnailUrl)
                 .apply(RequestOptions().centerCrop())
                 .into(holder.picture)
             //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")

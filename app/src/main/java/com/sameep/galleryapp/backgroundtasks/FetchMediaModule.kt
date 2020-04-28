@@ -5,12 +5,12 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
-import com.sameep.galleryapp.dataclasses.PictureFacer
+import com.sameep.galleryapp.dataclasses.Media
 
 class FetchMediaModule {
 
     companion object {
-        suspend fun getAllMedia(context: Context): List<PictureFacer> {
+        suspend fun getAllMedia(context: Context, mediaType:Int): List<Media> {
 
                val columns = arrayOf(
                    MediaStore.Files.FileColumns._ID,
@@ -20,12 +20,10 @@ class FetchMediaModule {
                    MediaStore.Files.FileColumns.MIME_TYPE,
                    MediaStore.Files.FileColumns.DISPLAY_NAME
                )
-               var images = mutableListOf<PictureFacer>()
+               var images = mutableListOf<Media>()
                val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                       + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-                       + " OR "
-                       + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                       + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+                       + mediaType
+                       )
                val orderBy = MediaStore.Files.FileColumns.DATE_ADDED
                val queryUri: Uri = MediaStore.Files.getContentUri("external")
 
@@ -40,13 +38,13 @@ class FetchMediaModule {
                    try {
                        cursor.moveToFirst()
                        do {
-                           val pic: PictureFacer = PictureFacer(
-                               cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
-                               cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
-                               cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)),
-                               cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)),
-                               cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE)),
-                               cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
+                           val pic = Media(
+                               name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
+                               thumbnailUrl = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
+                               type = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)),
+                               date = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)),
+                               mime = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE))
+                               //cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
 
                                // cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
                            )
