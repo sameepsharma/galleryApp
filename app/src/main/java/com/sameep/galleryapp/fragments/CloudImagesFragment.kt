@@ -27,7 +27,7 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
     private val retroObj = RetrofitProvider.getRetrofit()
     private lateinit var dashboardViewModel: CloudViewModel
     private lateinit var cloudAdapter : GalleryAdapter
-    val client = retroObj.create(ApiInterface::class.java)
+    private val client = retroObj.create(ApiInterface::class.java)
 
 
 
@@ -37,7 +37,7 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         savedInstanceState: Bundle?
     ): View? {
         dashboardViewModel =
-            CloudViewModel(client)
+            CloudViewModel(client,isImage)
 
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
         setUpViews(root)
@@ -65,19 +65,11 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cloud_progress.visibility=View.VISIBLE
-        if (isImage){
-        dashboardViewModel.observeLatestFlickr().observe(requireActivity(), Observer {
-            updateList(it, view)
-        })
-            dashboardViewModel.getLatestMediaFromFlickr()
-        }
-
-        else
-            {dashboardViewModel.observeVideos().observe(requireActivity(), Observer {
+            dashboardViewModel.observeMedia().observe(requireActivity(), Observer {
                 updateList(it,view)
             })
-                dashboardViewModel.getVideosFromFlickr()
-            }
+                dashboardViewModel.getLatestMediaFromFlickr()
+
 
 
 
