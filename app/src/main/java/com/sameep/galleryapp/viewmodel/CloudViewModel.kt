@@ -23,12 +23,21 @@ class CloudViewModel(private val apiClient: ApiInterface,private val isImage:Boo
     private val key: String by lazy {
         "8b766ab7b7e827c11516eb191be5f8a1"
     }
-    private var flickrMedia = MutableLiveData<ArrayList<Media>>()
 
+    private val flickrMedia : MutableLiveData<ArrayList<Media>> by lazy {
+        MutableLiveData<ArrayList<Media>>().also {
+            getLatestMediaFromFlickr()
+        }
+    }
 
-    fun getLatestMediaFromFlickr() {
-        viewModelScope.launch {
+    /*init {
+        getLatestMediaFromFlickr()
+    }  */
+
+   fun getLatestMediaFromFlickr() {
             var response:Response<FlickrResp>
+               viewModelScope.launch {
+
             withContext(IO) {
                 if (isImage)
                     response = apiClient.getMediaFromFlickr(key)
@@ -76,12 +85,10 @@ class CloudViewModel(private val apiClient: ApiInterface,private val isImage:Boo
 
                     }
 
-
+                    }
                 }
 
             }
-
-        }
 
     }
 

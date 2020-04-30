@@ -1,15 +1,12 @@
 package com.sameep.galleryapp.fragments
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +18,7 @@ import com.sameep.galleryapp.activities.ImageDetailActivity
 import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.LocalMediaViewModel
+import com.sameep.galleryapp.viewmodel.LocalViewModelFactory
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.fragment_images.view.*
 
@@ -29,8 +27,6 @@ import kotlinx.android.synthetic.main.fragment_images.view.*
  */
 class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickListener {
 
-    private val REQUEST_PERMISSIONS = 1001
-    private lateinit var viewModel: LocalMediaViewModel
     lateinit var galleryAdapter: GalleryAdapter
 
     override fun onCreateView(
@@ -40,46 +36,15 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
 
         val fragView = inflater.inflate(R.layout.fragment_images, container, false)
 
-        viewModel = LocalMediaViewModel(requireActivity().application, isImage)
+        //viewModel = LocalMediaViewModel(requireActivity().application, isImage)
+        val localViewModel : LocalMediaViewModel by viewModels<LocalMediaViewModel> {
+            LocalViewModelFactory(requireActivity().application, isImage)
+        }
 
-        setupViews(fragView)
-        if (hasPermission()) {
-            setUpObserver()
-            callForMedia()
-        } else
-            getpermission()
+        setupViews(fragView, localViewModel)
+
 
         return fragView
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        // TODO: Use the ViewModel
-    }
-
-    private fun callForMedia() {
-        // CoroutineScope(IO).launch {
-        viewModel.getMedia()
-        //}
-    }
-
-    private fun setUpObserver() {
-        viewModel.observeAllMedia().observe(requireActivity(), Observer {
-            updateList(it)
-        })
-    }
-
-    private fun hasPermission(): Boolean {
-
-        return (ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-                )
     }
 
     private fun updateList(data: List<Media>) {
@@ -88,7 +53,10 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         frag_loader.visibility = View.GONE
     }
 
-    private fun setupViews(fragView: View) {
+    private fun setupViews(
+        fragView: View,
+        localViewModel: LocalMediaViewModel
+    ) {
         fragView.frag_loader.visibility = View.VISIBLE
 
         val layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
@@ -97,50 +65,26 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         galleryAdapter = GalleryAdapter(emptyList(), requireContext(), GlideProvider.getGlide(requireContext())).apply {
             onClickRef=this@LocalImagesFragment
         }
-
         fragView.frag_rv.adapter = galleryAdapter
 
+        localViewModel.observeAllMedia().observe(requireActivity(), Observer {
+            updateList(it)
+        })
 
         fragView.frag_swipe.setOnRefreshListener {
             fragView.frag_loader.visibility = View.VISIBLE
-            callForMedia()
+            localViewModel.getMedia()
             fragView.frag_swipe.isRefreshing = false
         }
 
     }
 
-    private fun getpermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ),
-            REQUEST_PERMISSIONS
-        )
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_PERMISSIONS -> {
 
-                //mainViewModel.loadMedia()
-                setUpObserver()
-
-                callForMedia()
-            }
-        }
-    }
-
-    override fun onItemClick(image: Media) {
+    override fun onItemClick(item: Media) {
 
         val bundle = Bundle()
-        bundle.putParcelable(ImageDetailActivity.INTENT_DATA, image)
+        bundle.putParcelable(ImageDetailActivity.INTENT_DATA, item)
 
         //Navigation.findNavController(requireView()).navigate(R.id.home_to_detail, bundle)
 
@@ -150,7 +94,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         /* else{ // Some other target activity
               }*/
 
-        intent.putExtra(ImageDetailActivity.INTENT_DATA, image)
+        intent.putExtra(ImageDetailActivity.INTENT_DATA, item)
         startActivity(intent)
     }
 

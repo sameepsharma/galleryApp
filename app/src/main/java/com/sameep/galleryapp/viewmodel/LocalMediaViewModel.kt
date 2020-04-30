@@ -18,7 +18,15 @@ class LocalMediaViewModel(val appContext: Application, val isImage: Boolean) :
     // TODO: Implement the ViewModel
 
 
-    private var allMedia = MutableLiveData<List<Media>>()
+    private val allMedia : MutableLiveData<List<Media>> by lazy {
+        MutableLiveData<List<Media>>() .also {
+            getMedia()
+        }
+    }
+
+    /*init {
+        getMedia()
+    }*/
 
 
     fun observeAllMedia(): LiveData<List<Media>> {

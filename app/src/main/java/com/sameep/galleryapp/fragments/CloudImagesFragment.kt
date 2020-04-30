@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
@@ -18,6 +21,7 @@ import com.sameep.galleryapp.rest.ApiInterface
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.singletons.RetrofitProvider
 import com.sameep.galleryapp.viewmodel.CloudViewModel
+import com.sameep.galleryapp.viewmodel.CloudViewModelFactory
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
 
@@ -25,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_dashboard.view.*
 class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickListener {
 
     private val retroObj = RetrofitProvider.getRetrofit()
-    private lateinit var dashboardViewModel: CloudViewModel
+  //  private lateinit var dashboardViewModel: CloudViewModel
     private lateinit var cloudAdapter : GalleryAdapter
     private val client = retroObj.create(ApiInterface::class.java)
 
@@ -36,8 +40,6 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-            CloudViewModel(client,isImage)
 
         val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
         setUpViews(root)
@@ -47,14 +49,22 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
     private fun setUpViews(root: View?) {
 
         root?.let {
+            val cloudViewModel : CloudViewModel by viewModels<CloudViewModel>(){
+                CloudViewModelFactory(RetrofitProvider.getRetrofit().create(ApiInterface::class.java), isImage)
+            }
             root.cloud_progress.visibility=View.VISIBLE
             root.cloud_rv.layoutManager= GridLayoutManager(requireContext(), 2, RecyclerView.VERTICAL, false)
             cloudAdapter = GalleryAdapter(null, requireContext(), GlideProvider.getGlide(requireContext())).apply { onClickRef=this@CloudImagesFragment }
             root.cloud_rv.adapter = cloudAdapter
 
+            cloudViewModel.observeMedia().observe(requireActivity(), Observer {
+                updateList(it,root)
+            })
+            //cloudViewModel.getLatestMediaFromFlickr()
+
             root.cloud_swipe.setOnRefreshListener {
                 root.cloud_progress.visibility=View.VISIBLE
-                dashboardViewModel.getLatestMediaFromFlickr()
+                cloudViewModel.getLatestMediaFromFlickr()
                 root.cloud_swipe.isRefreshing=false
             }
 
@@ -65,10 +75,8 @@ class CloudImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cloud_progress.visibility=View.VISIBLE
-            dashboardViewModel.observeMedia().observe(requireActivity(), Observer {
-                updateList(it,view)
-            })
-                dashboardViewModel.getLatestMediaFromFlickr()
+
+                //dashboardViewModel.getLatestMediaFromFlickr()
 
 
 
