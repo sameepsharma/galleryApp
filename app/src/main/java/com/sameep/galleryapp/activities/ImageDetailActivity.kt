@@ -1,6 +1,7 @@
 package com.sameep.galleryapp.activities
 
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.Media
@@ -29,12 +30,16 @@ class ImageDetailActivity : AppCompatActivity() {
                 detail_tv_date.text = getDate(extra_data.date.toLong(), "MMM dd, yyyy hh:mm:ss.SSS")
             }
             extra_data.mime?.let {
-                detail_tv_name.text = extra_data.name
+                detail_tv_name.text =it
+            }
+
+            extra_data.name?.let {
+                detail_tv_name.text=it
             }
 
             val type = extra_data.type
             if (type != 0) {
-                if (type == 1)
+                if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
                     detail_tv_type.text = "Image"
                 else
                     detail_tv_type.text = "Video"

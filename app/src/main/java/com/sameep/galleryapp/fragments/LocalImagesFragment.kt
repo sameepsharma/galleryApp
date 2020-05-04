@@ -16,6 +16,7 @@ import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
 import com.sameep.galleryapp.dataclasses.Media
+import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.LocalMediaViewModel
 import com.sameep.galleryapp.viewmodel.LocalViewModelFactory
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_images.view.*
 /**
  * A simple [Fragment] subclass.
  */
-class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickListener {
+class LocalImagesFragment(val mediaType:MediaType) : Fragment(), onAdapterItemClickListener {
 
     lateinit var galleryAdapter: GalleryAdapter
 
@@ -38,7 +39,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
 
         //viewModel = LocalMediaViewModel(requireActivity().application, isImage)
         val localViewModel : LocalMediaViewModel by viewModels<LocalMediaViewModel> {
-            LocalViewModelFactory(requireActivity().application, isImage)
+            LocalViewModelFactory(requireActivity().application, mediaType)
         }
 
         setupViews(fragView, localViewModel)
@@ -81,10 +82,10 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
 
 
 
-    override fun onItemClick(item: Media) {
+    override fun onItemClick(image: Media) {
 
         val bundle = Bundle()
-        bundle.putParcelable(ImageDetailActivity.INTENT_DATA, item)
+        bundle.putParcelable(ImageDetailActivity.INTENT_DATA, image)
 
         //Navigation.findNavController(requireView()).navigate(R.id.home_to_detail, bundle)
 
@@ -94,7 +95,7 @@ class LocalImagesFragment(val isImage:Boolean) : Fragment(), onAdapterItemClickL
         /* else{ // Some other target activity
               }*/
 
-        intent.putExtra(ImageDetailActivity.INTENT_DATA, item)
+        intent.putExtra(ImageDetailActivity.INTENT_DATA, image)
         startActivity(intent)
     }
 

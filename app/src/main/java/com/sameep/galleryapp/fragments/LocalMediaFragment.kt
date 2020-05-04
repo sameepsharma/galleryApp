@@ -2,13 +2,14 @@ package com.sameep.galleryapp.fragments
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.adapters.MyViewPagerStateAdapter
-import kotlinx.android.synthetic.main.activity_tab_viewpager.*
+import com.sameep.galleryapp.enums.MediaType
 import kotlinx.android.synthetic.main.local_media_fragment.view.*
 
 class LocalMediaFragment : Fragment() {
@@ -30,8 +31,12 @@ class LocalMediaFragment : Fragment() {
 
         val adapter = MyViewPagerStateAdapter(childFragmentManager)
         //add fragments to viewPager
-        val images = LocalImagesFragment(true)
-        val videos = LocalImagesFragment(false)
+        for (i in MediaType.values()){
+            Log.e("EnumValue = ", "${i.name}")
+        }
+
+        val images = LocalImagesFragment(MediaType.IMAGE)
+        val videos = LocalImagesFragment(MediaType.VIDEO)
         adapter.addFragment(images, "Images")
         adapter.addFragment(videos, "Videos")
 

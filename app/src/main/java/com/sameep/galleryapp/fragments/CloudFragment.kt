@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.adapters.MyViewPagerStateAdapter
-import kotlinx.android.synthetic.main.activity_tab_viewpager.*
+import com.sameep.galleryapp.enums.MediaType
 import kotlinx.android.synthetic.main.local_media_fragment.view.*
 
 class CloudFragment : Fragment() {
@@ -30,8 +30,8 @@ class CloudFragment : Fragment() {
 
         val adapter = MyViewPagerStateAdapter(childFragmentManager)
         //add fragments to viewPager
-        val images = CloudImagesFragment(true)
-        val videos = CloudImagesFragment(false)
+        val images = CloudImagesFragment(MediaType.IMAGE.value)
+        val videos = CloudImagesFragment(MediaType.VIDEO.value)
 
         adapter.addFragment(images, "Images")
         adapter.addFragment(videos, "Videos")

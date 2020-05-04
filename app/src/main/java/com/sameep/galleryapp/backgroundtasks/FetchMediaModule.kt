@@ -6,11 +6,18 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
 import com.sameep.galleryapp.dataclasses.Media
+import com.sameep.galleryapp.enums.MediaType
 
 class FetchMediaModule {
 
     companion object {
-        suspend fun getAllMedia(context: Context, mediaType:Int): List<Media> {
+        suspend fun getAllMedia(context: Context, mediaType:MediaType): List<Media> {
+
+            var type:Int=1
+            if (mediaType==MediaType.IMAGE)
+                type=MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+            else if (mediaType==MediaType.VIDEO)
+                type=MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO
 
                val columns = arrayOf(
                    MediaStore.Files.FileColumns._ID,
@@ -21,13 +28,14 @@ class FetchMediaModule {
                    MediaStore.Files.FileColumns.DISPLAY_NAME
                )
                var images = mutableListOf<Media>()
+
                val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-                       + mediaType
+                       + type
                        )
                val orderBy = MediaStore.Files.FileColumns.DATE_ADDED
                val queryUri: Uri = MediaStore.Files.getContentUri("external")
 
-               val cursor: Cursor? = context.getContentResolver().query(
+               val cursor: Cursor? = context.contentResolver.query(
                    queryUri,
                    columns,
                    selection,

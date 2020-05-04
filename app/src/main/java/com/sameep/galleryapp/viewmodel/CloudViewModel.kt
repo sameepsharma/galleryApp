@@ -18,7 +18,7 @@ import retrofit2.Response
 
 
 
-class CloudViewModel(private val apiClient: ApiInterface,private val isImage:Boolean) : ViewModel() {
+class CloudViewModel(private val apiClient: ApiInterface,private val mediaType:Int) : ViewModel() {
 
     private val key: String by lazy {
         "8b766ab7b7e827c11516eb191be5f8a1"
@@ -35,14 +35,20 @@ class CloudViewModel(private val apiClient: ApiInterface,private val isImage:Boo
     }  */
 
    fun getLatestMediaFromFlickr() {
-            var response:Response<FlickrResp>
                viewModelScope.launch {
 
             withContext(IO) {
-                if (isImage)
+                            var response: Response<FlickrResp>? = null
+
+                var isImage=false
+                if (mediaType==MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE){
                     response = apiClient.getMediaFromFlickr(key)
-                else
+                                                    isImage=true
+                }
+                else if (mediaType==MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)  {
                     response = apiClient.getVideoSearchResult(key)
+                    isImage=false
+                }
                 response?.let { it1 ->
                     if (it1.isSuccessful) {
                         Log.e("Succcessfull >> ", "YES <<<")
