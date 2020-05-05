@@ -16,7 +16,9 @@ import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
 import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.enums.MediaType
+import com.sameep.galleryapp.rest.ApiInterface
 import com.sameep.galleryapp.singletons.GlideProvider
+import com.sameep.galleryapp.singletons.RetrofitProvider
 import com.sameep.galleryapp.viewmodel.LocalMediaViewModel
 import com.sameep.galleryapp.viewmodel.LocalViewModelFactory
 import kotlinx.android.synthetic.main.fragment_images.*
@@ -25,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_images.view.*
 /**
  * A simple [Fragment] subclass.
  */
-class LocalImagesFragment(val mediaType:MediaType) : Fragment(), onAdapterItemClickListener {
+class LocalImagesFragment(val mediaType:MediaType, val isLocal:Boolean) : Fragment(), onAdapterItemClickListener {
 
     lateinit var galleryAdapter: GalleryAdapter
 
@@ -36,13 +38,10 @@ class LocalImagesFragment(val mediaType:MediaType) : Fragment(), onAdapterItemCl
 
         val fragView = inflater.inflate(R.layout.fragment_images, container, false)
 
-        //viewModel = LocalMediaViewModel(requireActivity().application, isImage)
-        val localViewModel : LocalMediaViewModel by viewModels<LocalMediaViewModel> {
-            LocalViewModelFactory(requireActivity().application, mediaType)
-        }
-
+            val localViewModel: LocalMediaViewModel by viewModels {
+                LocalViewModelFactory(requireActivity().application, mediaType, RetrofitProvider.getRetrofit().create(ApiInterface::class.java), isLocal)
+            }
         setupViews(fragView, localViewModel)
-
 
         return fragView
     }

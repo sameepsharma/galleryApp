@@ -5,6 +5,7 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.Media
+import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.singletons.GlideProvider
 import kotlinx.android.synthetic.main.activity_image_detail.*
 import java.text.SimpleDateFormat
@@ -33,16 +34,13 @@ class ImageDetailActivity : AppCompatActivity() {
                 detail_tv_name.text =it
             }
 
-            extra_data.name?.let {
+            extra_data.name.let {
                 detail_tv_name.text=it
             }
 
-            val type = extra_data.type
-            if (type != 0) {
-                if (type == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-                    detail_tv_type.text = "Image"
-                else
-                    detail_tv_type.text = "Video"
+            when(extra_data.type){
+                MediaType.IMAGE -> detail_tv_type.text = "Image"
+                MediaType.VIDEO -> detail_tv_type.text = "Video"
             }
 
         }
@@ -55,7 +53,7 @@ class ImageDetailActivity : AppCompatActivity() {
 
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         val calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliSeconds);
+        calendar.timeInMillis = milliSeconds;
         return formatter.format(calendar.getTime());
     }
 }

@@ -12,7 +12,7 @@ import com.sameep.galleryapp.adapters.MyViewPagerStateAdapter
 import com.sameep.galleryapp.enums.MediaType
 import kotlinx.android.synthetic.main.local_media_fragment.view.*
 
-class LocalMediaFragment : Fragment() {
+class LocalMediaFragment(val isLocal:Boolean) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,14 +31,20 @@ class LocalMediaFragment : Fragment() {
 
         val adapter = MyViewPagerStateAdapter(childFragmentManager)
         //add fragments to viewPager
-        for (i in MediaType.values()){
-            Log.e("EnumValue = ", "${i.name}")
-        }
+        if (isLocal){
+            val images = LocalImagesFragment(MediaType.IMAGE,true)
+            val videos = LocalImagesFragment(MediaType.VIDEO,true)
+            adapter.addFragment(images, "Images")
+            adapter.addFragment(videos, "Videos")
 
-        val images = LocalImagesFragment(MediaType.IMAGE)
-        val videos = LocalImagesFragment(MediaType.VIDEO)
-        adapter.addFragment(images, "Images")
-        adapter.addFragment(videos, "Videos")
+        }else{
+            val images = LocalImagesFragment(MediaType.IMAGE,false)
+            val videos = LocalImagesFragment(MediaType.VIDEO,false)
+
+            adapter.addFragment(images, "Images")
+            adapter.addFragment(videos, "Videos")
+
+        }
 
         fragView.local_pager.adapter=adapter
         fragView.local_tab.setupWithViewPager(fragView.local_pager)

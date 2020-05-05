@@ -2,14 +2,14 @@ package com.sameep.galleryapp.application
 
 import android.app.Application
 import android.content.Context
+import androidx.multidex.MultiDexApplication
 
-class GalleryApp : Application() {
+class GalleryApp : MultiDexApplication() {
 
     companion object{
-        lateinit var app : Application
+        lateinit var app : GalleryApp
+        private set
 
-        val Context.galleryApp: GalleryApp
-            get() = applicationContext as GalleryApp
     }
 
     override fun onCreate() {

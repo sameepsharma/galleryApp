@@ -13,11 +13,9 @@ class FetchMediaModule {
     companion object {
         suspend fun getAllMedia(context: Context, mediaType:MediaType): List<Media> {
 
-            var type:Int=1
-            if (mediaType==MediaType.IMAGE)
-                type=MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-            else if (mediaType==MediaType.VIDEO)
-                type=MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO
+            var type = if (mediaType==MediaType.IMAGE) MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
+            else MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO
+
 
                val columns = arrayOf(
                    MediaStore.Files.FileColumns._ID,
@@ -49,7 +47,7 @@ class FetchMediaModule {
                            val pic = Media(
                                name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)),
                                thumbnailUrl = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)),
-                               type = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)),
+                               type = if (cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))==MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE) MediaType.IMAGE else MediaType.VIDEO,
                                date = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)),
                                mime = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MIME_TYPE))
                                //cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
@@ -57,7 +55,7 @@ class FetchMediaModule {
                                // cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE))
                            )
                            images.add(pic)
-                       } while (cursor!!.moveToNext())
+                       } while (cursor.moveToNext())
                        cursor.close()
 
                    } catch (e: Exception) {

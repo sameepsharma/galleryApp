@@ -8,6 +8,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.Media
+import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.viewholders.PicHolder
 
 interface onAdapterItemClickListener {
@@ -44,11 +45,10 @@ class GalleryAdapter(
                 .into(holder.picture)
             //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
 
-            if (image.type == 1)
-                holder.type.setBackgroundResource(R.drawable.ic_photo)
-            else if (image.type == 3)
-                holder.type.setBackgroundResource(R.drawable.ic_video)
-
+            when(image.type){
+                MediaType.IMAGE -> holder.type.setBackgroundResource(R.drawable.ic_photo)
+                MediaType.VIDEO -> holder.type.setBackgroundResource(R.drawable.ic_video)
+            }
             holder.name.text = image.name
 
             holder.picture.setOnClickListener {

@@ -8,7 +8,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.adapters.MyViewPagerStateAdapter
-import com.sameep.galleryapp.fragments.CloudFragment
 import com.sameep.galleryapp.fragments.LocalMediaFragment
 import kotlinx.android.synthetic.main.activity_tab_viewpager.*
 
@@ -32,8 +31,9 @@ class TabViewpagerActivity : AppCompatActivity() {
 
         val adapter = MyViewPagerStateAdapter(supportFragmentManager).apply {
             //add fragments to viewPager
-            val local = LocalMediaFragment()
-            val cloud = CloudFragment()
+            val local = LocalMediaFragment(true)
+            val cloud = LocalMediaFragment(false)
+
             addFragment(local, "Local Media")
             addFragment(cloud, "Cloud Media")
 
