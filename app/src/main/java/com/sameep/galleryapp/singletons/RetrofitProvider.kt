@@ -1,8 +1,5 @@
 package com.sameep.galleryapp.singletons
 
-import android.content.Context
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

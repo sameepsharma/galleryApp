@@ -1,9 +1,6 @@
 package com.sameep.galleryapp.rest
 
-import com.google.gson.JsonObject
 import com.sameep.galleryapp.dataclasses.FlickrResp
-import com.sameep.galleryapp.dataclasses.Photos
-import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.POST
 import retrofit2.http.Query

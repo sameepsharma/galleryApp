@@ -30,8 +30,8 @@ class CloudFragment : Fragment() {
 
         val adapter = MyViewPagerStateAdapter(childFragmentManager)
         //add fragments to viewPager
-        val images = CloudImagesFragment(MediaType.IMAGE.value)
-        val videos = CloudImagesFragment(MediaType.VIDEO.value)
+        val images = CloudImagesFragment(MediaType.IMAGE)
+        val videos = CloudImagesFragment(MediaType.VIDEO)
 
         adapter.addFragment(images, "Images")
         adapter.addFragment(videos, "Videos")

@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.adapters.MyViewPagerStateAdapter
 import com.sameep.galleryapp.fragments.CloudFragment
-import com.sameep.galleryapp.fragments.CloudImagesFragment
 import com.sameep.galleryapp.fragments.LocalMediaFragment
 import kotlinx.android.synthetic.main.activity_tab_viewpager.*
 

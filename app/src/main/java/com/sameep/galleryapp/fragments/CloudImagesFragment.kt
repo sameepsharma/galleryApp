@@ -6,19 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateViewModelFactory
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
 import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
-import com.sameep.galleryapp.application.GalleryApp
 import com.sameep.galleryapp.dataclasses.Media
+import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.rest.ApiInterface
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.singletons.RetrofitProvider
@@ -28,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_dashboard.*
 import kotlinx.android.synthetic.main.fragment_dashboard.view.*
 
 
-class CloudImagesFragment(val mediaType:Int) : Fragment(), onAdapterItemClickListener {
+class CloudImagesFragment(val mediaType:MediaType) : Fragment(), onAdapterItemClickListener {
 
     private val retroObj = RetrofitProvider.getRetrofit()
   //  private lateinit var dashboardViewModel: CloudViewModel

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sameep.galleryapp.dataclasses.FlickrResp
 import com.sameep.galleryapp.dataclasses.Media
+import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.rest.ApiInterface
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -18,7 +19,7 @@ import retrofit2.Response
 
 
 
-class CloudViewModel(private val apiClient: ApiInterface,private val mediaType:Int) : ViewModel() {
+class CloudViewModel(private val apiClient: ApiInterface,private val mediaType:MediaType) : ViewModel() {
 
     private val key: String by lazy {
         "8b766ab7b7e827c11516eb191be5f8a1"
@@ -41,11 +42,11 @@ class CloudViewModel(private val apiClient: ApiInterface,private val mediaType:I
                             var response: Response<FlickrResp>? = null
 
                 var isImage=false
-                if (mediaType==MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE){
+                if (mediaType==MediaType.IMAGE){
                     response = apiClient.getMediaFromFlickr(key)
-                                                    isImage=true
+                    isImage=true
                 }
-                else if (mediaType==MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)  {
+                else if (mediaType==MediaType.VIDEO)  {
                     response = apiClient.getVideoSearchResult(key)
                     isImage=false
                 }
