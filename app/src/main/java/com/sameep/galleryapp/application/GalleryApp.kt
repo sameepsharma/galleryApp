@@ -2,9 +2,8 @@ package com.sameep.galleryapp.application
 
 import android.app.Application
 import android.content.Context
-import androidx.multidex.MultiDexApplication
 
-class GalleryApp : MultiDexApplication() {
+class  GalleryApp : Application() {
 
     companion object{
         lateinit var app : GalleryApp

@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".application.GalleryApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,8 +20,11 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+
+
         <activity android:name=".activities.ImageDetailActivity" />
-        <activity android:name=".activities.TabViewpagerActivity">
+        <activity android:name=".activities.TabViewpagerActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

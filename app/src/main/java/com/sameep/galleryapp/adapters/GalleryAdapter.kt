@@ -3,6 +3,8 @@ package com.androidcodeman.simpleimagegallery.utils
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
@@ -16,11 +18,11 @@ interface onAdapterItemClickListener {
 }
 
 class GalleryAdapter(
-    private var pictureList: List<Media>?,
+    private var pictureList: List<Media>,
     private val pictureContx: Context,
     private val glide: RequestManager
 ) :
-    RecyclerView.Adapter<PicHolder>() {
+    PagedListAdapter<Media, PicHolder>(REPO_COMPARATOR) {
 
 
     var onClickRef: onAdapterItemClickListener? = null
@@ -37,26 +39,29 @@ class GalleryAdapter(
 
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
         pictureList?.let {
-            val image: Media = it[position]
+            val image: Media? = getItem(position)
 
-            glide
-                .load(image.thumbnailUrl)
-                .apply(RequestOptions().centerCrop())
-                .into(holder.picture)
-            //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
+            image?.let {
+                glide
+                    .load(image.thumbnailUrl)
+                    .apply(RequestOptions().centerCrop())
+                    .into(holder.picture)
+                //ViewCompat.setTransitionName(holder.picture, position.toString() + "_image")
 
-            when(image.type){
-                MediaType.IMAGE -> holder.type.setBackgroundResource(R.drawable.ic_photo)
-                MediaType.VIDEO -> holder.type.setBackgroundResource(R.drawable.ic_video)
+                when(image.type){
+                    MediaType.IMAGE -> holder.type.setBackgroundResource(R.drawable.ic_photo)
+                    MediaType.VIDEO -> holder.type.setBackgroundResource(R.drawable.ic_video)
+                }
+                holder.name.text = image.name
+
+                holder.picture.setOnClickListener {
+
+                    onClickRef?.onItemClick(image)
+
+
+                }
             }
-            holder.name.text = image.name
 
-            holder.picture.setOnClickListener {
-
-                onClickRef?.onItemClick(image)
-
-
-            }
         }
 
 
@@ -67,6 +72,16 @@ class GalleryAdapter(
             return pictureList!!.size
         } else
             return 0
+    }
+
+    companion object {
+        private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<Media>() {
+            override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean =
+                oldItem.name == newItem.name
+
+            override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean =
+                oldItem == newItem
+        }
     }
 
 }

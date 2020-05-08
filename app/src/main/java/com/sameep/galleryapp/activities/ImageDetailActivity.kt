@@ -2,6 +2,7 @@ package com.sameep.galleryapp.activities
 
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.dataclasses.Media
@@ -36,6 +37,11 @@ class ImageDetailActivity : AppCompatActivity() {
 
             extra_data.name.let {
                 detail_tv_name.text=it
+            }
+
+            extra_data.tags?.let {
+                detail_ll_tags.visibility=View.VISIBLE
+                detail_tv_tags.text=it
             }
 
             when(extra_data.type){
