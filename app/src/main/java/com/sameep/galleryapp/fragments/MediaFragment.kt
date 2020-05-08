@@ -13,9 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.androidcodeman.simpleimagegallery.utils.GalleryAdapter
+import com.sameep.galleryapp.adapters.GalleryAdapter
 import com.androidcodeman.simpleimagegallery.utils.LocalMeddiaAdapter
-import com.androidcodeman.simpleimagegallery.utils.onAdapterItemClickListener
+import com.sameep.galleryapp.adapters.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
 import com.sameep.galleryapp.application.GalleryApp
@@ -33,13 +33,12 @@ import kotlinx.android.synthetic.main.fragment_images.view.*
 /**
  * A simple [Fragment] subclass.
  */
-class MediaFragment(private val mediaType:MediaType, private val source: Source) : Fragment(), onAdapterItemClickListener {
+class MediaFragment(private val mediaType:MediaType, private val source: Source) : Fragment(),
+    onAdapterItemClickListener {
 
     private lateinit var galleryAdapter: GalleryAdapter
     private lateinit var localAdapter : LocalMeddiaAdapter
-    /*val localViewModel :  LocalMediaViewModel by activityViewModels<LocalMediaViewModel> {
-        LocalViewModelFactory(GalleryApp.app, mediaType, RetrofitProvider.getRetrofit().create(ApiInterface::class.java), source)
-    }*/
+
     private val localViewModel : MediaViewModel by viewModels<MediaViewModel>() {
         LocalViewModelFactory(GalleryApp.app, mediaType, RetrofitProvider.getRetrofit().create(ApiInterface::class.java), source)
     }
@@ -67,8 +66,7 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
 
     private fun setUpSearchQueryObserver() {
         localViewModel.observeSearchQuery().observe(requireActivity(), Observer {
-            Log.e("Changes>>",it)
-                localViewModel.setAllMedia(it)
+                localViewModel.searchMediaByQuery(it)
         })
     }
 
@@ -77,7 +75,7 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
     ) {
         fragView.frag_swipe.setOnRefreshListener {
             fragView.frag_loader.visibility = View.VISIBLE
-            localViewModel.setAllMedia(fragView.input.text.toString())
+            localViewModel.searchMediaByQuery(fragView.input.text.toString())
             fragView.frag_swipe.isRefreshing = false
         }
 
@@ -87,7 +85,6 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         if (source==Source.FLICKR){
             localViewModel.observeAllMedia().observe(requireActivity(), Observer {
                 updateList(it)
-                Log.e("PagedSize>>", "${it?.size} <<")
             })
         }else
             localViewModel.observeLocalMedia().observe(requireActivity(), Observer {
@@ -106,7 +103,8 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
     private fun updateList(data: PagedList<Media>) {
 
         Log.e("UPDATELIST>>", "${data.size}")
-        //galleryAdapter.setPictureList(data)
+        //galleryAdapter.setPictureList(data)3
+
         galleryAdapter.submitList(data)
         frag_loader.visibility = View.GONE
     }
@@ -118,9 +116,11 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         fragView.frag_rv.layoutManager = layoutManager
         fragView.frag_rv.hasFixedSize()
 
-        galleryAdapter = GalleryAdapter(emptyList(), requireContext(), GlideProvider.getGlide(requireContext())).apply {
+        if (source==Source.FLICKR)
+        galleryAdapter = GalleryAdapter(requireContext(), GlideProvider.getGlide(requireContext())).apply {
             onClickRef=this@MediaFragment
         }
+        else
         localAdapter= LocalMeddiaAdapter(emptyList(),requireContext(),GlideProvider.getGlide(requireContext())).apply {
             onLocalClickRef=this@MediaFragment
         }
@@ -138,13 +138,7 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         val bundle = Bundle()
         bundle.putParcelable(ImageDetailActivity.INTENT_DATA, image)
 
-        //Navigation.findNavController(requireView()).navigate(R.id.home_to_detail, bundle)
-
-
-        // if (image.mediaType==1)
         val intent = Intent(activity, ImageDetailActivity::class.java)
-        /* else{ // Some other target activity
-              }*/
 
         intent.putExtra(ImageDetailActivity.INTENT_DATA, image)
         startActivity(intent)
@@ -154,7 +148,8 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         fragView.input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 Log.e("Query>> ", fragView.input.text.toString()+"<<")
-                model.setAllMedia(query = fragView.input.text.toString())
+               // model.invalidateData()
+                model.searchMediaByQuery(fragView.input.text.toString())
                 true
             } else {
                 false

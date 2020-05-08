@@ -1,11 +1,10 @@
-package com.androidcodeman.simpleimagegallery.utils
+package com.sameep.galleryapp.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
@@ -18,7 +17,6 @@ interface onAdapterItemClickListener {
 }
 
 class GalleryAdapter(
-    private var pictureList: List<Media>,
     private val pictureContx: Context,
     private val glide: RequestManager
 ) :
@@ -28,7 +26,7 @@ class GalleryAdapter(
     var onClickRef: onAdapterItemClickListener? = null
 
     fun setPictureList(list:List<Media>){
-        this.pictureList=list
+        //this.pictureList=list
         notifyDataSetChanged()
     }
 
@@ -38,7 +36,7 @@ class GalleryAdapter(
     }
 
     override fun onBindViewHolder(holder: PicHolder, position: Int) {
-        pictureList?.let {
+       // pictureList?.let {
             val image: Media? = getItem(position)
 
             image?.let {
@@ -62,17 +60,17 @@ class GalleryAdapter(
                 }
             }
 
-        }
+        //}
 
 
     }
 
-    override fun getItemCount(): Int {
+    /*override fun getItemCount(): Int {
         if (pictureList != null) {
             return pictureList!!.size
         } else
             return 0
-    }
+    }*/
 
     companion object {
         private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<Media>() {

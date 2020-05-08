@@ -79,7 +79,6 @@ class MediaDataSource(private val query:String, private val scope:CoroutineScope
                 response?.let { it1 ->
                     if (it1.isSuccessful) {
                         PAGE++
-                        Log.e("AfterSucess>>","YES<<<")
                         val respBody = it1.body()
 
                         val listOfMedia = getListFromResponse(respBody)

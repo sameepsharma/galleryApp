@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.sameep.galleryapp.R
+import com.sameep.galleryapp.adapters.onAdapterItemClickListener
 import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.viewholders.PicHolder
