@@ -1,6 +1,7 @@
 package com.sameep.galleryapp.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
@@ -24,11 +25,6 @@ class GalleryAdapter(
 
 
     var onClickRef: onAdapterItemClickListener? = null
-
-    fun setPictureList(list:List<Media>){
-        //this.pictureList=list
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(container: ViewGroup, position: Int): PicHolder {
         val view = LayoutInflater.from(pictureContx).inflate(R.layout.rt_gallery, container, false)

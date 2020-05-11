@@ -20,10 +20,9 @@ class MediaDataSource(private val query:String, private val scope:CoroutineScope
 
     override fun loadInitial(params: LoadInitialParams<Long>, callback: LoadInitialCallback<Media>) {
         scope.launch {
-            Log.e(
-                "ProcessingQuery>>>", query
-            )
-            val response = RetrofitProvider.getRetrofit().create(ApiInterface::class.java).getImagesForQuery(ApiInterface.key, query, PAGE, PAGE_SIZE)
+            val apiInterface = RetrofitProvider.getRetrofit().create(ApiInterface::class.java)
+            val response = if (mediaType==MediaType.IMAGE) apiInterface.getImagesForQuery(ApiInterface.key, query, PAGE, PAGE_SIZE)
+            else apiInterface.getVideoSearchResult(ApiInterface.key,query, PAGE,PAGE_SIZE)
             if (response.isSuccessful){
                 response?.let { it1 ->
                     if (it1.isSuccessful) {

@@ -11,7 +11,7 @@ import com.sameep.galleryapp.enums.MediaType
 class FetchMediaModule {
 
     companion object {
-        suspend fun getAllMedia(context: Context, mediaType:MediaType): List<Media> {
+        suspend fun getAllMedia(context: Context, mediaType:MediaType, limit:Int, offset:Int): List<Media> {
 
             var type = if (mediaType==MediaType.IMAGE) MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
             else MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO
@@ -38,7 +38,7 @@ class FetchMediaModule {
                    columns,
                    selection,
                    null,
-                   orderBy + " DESC" // Sort order.
+                   orderBy + " DESC LIMIT "+limit + " OFFSET "+offset // Sort order.
                )
                cursor?.let {
                    try {

@@ -37,7 +37,7 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
     onAdapterItemClickListener {
 
     private lateinit var galleryAdapter: GalleryAdapter
-    private lateinit var localAdapter : LocalMeddiaAdapter
+    //private lateinit var localAdapter : LocalMeddiaAdapter
 
     private val localViewModel : MediaViewModel by viewModels<MediaViewModel>() {
         LocalViewModelFactory(GalleryApp.app, mediaType, RetrofitProvider.getRetrofit().create(ApiInterface::class.java), source)
@@ -58,17 +58,11 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         setupViews(fragView)
         setupSwipeToRefresh(fragView)
         setUpObserverForMedia()
-        setUpSearchQueryObserver()
         initSearch(fragView,localViewModel)
 
         return fragView
     }
 
-    private fun setUpSearchQueryObserver() {
-        localViewModel.observeSearchQuery().observe(requireActivity(), Observer {
-                localViewModel.searchMediaByQuery(it)
-        })
-    }
 
     private fun setupSwipeToRefresh(
         fragView: View
@@ -83,28 +77,21 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
 
     private fun setUpObserverForMedia() {
         if (source==Source.FLICKR){
-            localViewModel.observeAllMedia().observe(requireActivity(), Observer {
+            localViewModel.flickrMedia.observe(requireActivity(), Observer {
                 updateList(it)
             })
-        }else
-            localViewModel.observeLocalMedia().observe(requireActivity(), Observer {
-                updateLocalList(it)
-            })
-
-    }
-
-    private fun updateLocalList(localMedia: List<Media>) {
-
-        localAdapter.setLocalList(localMedia)
-        frag_loader.visibility=View.GONE
+        }else{
+            localViewModel.fetchLocalMedia()
+            localViewModel.localMedia.observe(requireActivity(), Observer {
+                it?.let {
+                    updateList(it)
+                    //updateLocalList(it)
+                }
+            })}
 
     }
 
     private fun updateList(data: PagedList<Media>) {
-
-        Log.e("UPDATELIST>>", "${data.size}")
-        //galleryAdapter.setPictureList(data)3
-
         galleryAdapter.submitList(data)
         frag_loader.visibility = View.GONE
     }
@@ -114,19 +101,13 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
 
         val layoutManager = GridLayoutManager(activity, 2, RecyclerView.VERTICAL, false)
         fragView.frag_rv.layoutManager = layoutManager
-        fragView.frag_rv.hasFixedSize()
+        //fragView.frag_rv.hasFixedSize()
 
-        if (source==Source.FLICKR)
         galleryAdapter = GalleryAdapter(requireContext(), GlideProvider.getGlide(requireContext())).apply {
             onClickRef=this@MediaFragment
         }
-        else
-        localAdapter= LocalMeddiaAdapter(emptyList(),requireContext(),GlideProvider.getGlide(requireContext())).apply {
-            onLocalClickRef=this@MediaFragment
-        }
 
-
-        fragView.frag_rv.adapter =if (source==Source.FLICKR) galleryAdapter else localAdapter
+        fragView.frag_rv.adapter =galleryAdapter//if (source==Source.FLICKR) galleryAdapter else localAdapter
 
 
     }
@@ -149,7 +130,11 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 Log.e("Query>> ", fragView.input.text.toString()+"<<")
                // model.invalidateData()
+
                 model.searchMediaByQuery(fragView.input.text.toString())
+                model.flickrMedia.observe(requireActivity(), Observer {
+                    updateList(it)
+                })
                 true
             } else {
                 false

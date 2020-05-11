@@ -21,15 +21,16 @@ interface ApiInterface {
                              , @Field("client_secret") secret : String, @Field("redirect_uri") redirect : String
                              , @Field(""))*/
 
-    @POST("?format=json&nojsoncallback=1&method=flickr.photos.getRecent&per_page=10&extras=media")
+    @POST("?format=json&nojsoncallback=1&method=flickr.photos.getRecent&per_page=10&extras=media,tags")
     suspend fun getMediaFromFlickr(@Query("api_key") api_key:String) : Response<FlickrResp>
 
-    @POST("?format=json&nojsoncallback=1&method=flickr.photos.search&extras=media,tags")
+    @POST("?format=json&nojsoncallback=1&method=flickr.photos.search&media=photos&extras=media,tags")
     suspend fun getImagesForQuery(@Query("api_key") api_key:String, @Query("text") text :String
                                   , @Query("page") page : Int=1, @Query("per_page") per_page : Int=30) : Response<FlickrResp>
 
 
-    @POST("?format=json&nojsoncallback=1&method=flickr.photos.search&media=video&per_page=50&extras=media,url_z,tags")
-    suspend fun getVideoSearchResult(@Query("api_key") api_key:String, @Query("text") text :String) : Response<FlickrResp>
+    @POST("?format=json&nojsoncallback=1&method=flickr.photos.search&media=video&extras=media,url_z,tags")
+    suspend fun getVideoSearchResult(@Query("api_key") api_key:String, @Query("text") text :String, @Query("page") page : Int=1
+                                     , @Query("per_page") per_page : Int=30) : Response<FlickrResp>
 
 }

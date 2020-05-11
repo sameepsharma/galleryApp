@@ -12,6 +12,7 @@ import androidx.paging.PagedList
 import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
 import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.datasource.FlickrDatasourceFactory
+import com.sameep.galleryapp.datasource.LocalDatasourceFactory
 import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.enums.Source
 import com.sameep.galleryapp.rest.ApiInterface
@@ -28,75 +29,41 @@ class MediaViewModel(
 ) :
     AndroidViewModel(appContext) {
 
-    private val searchQuery= MutableLiveData<String>()
-    private lateinit var allMedia: LiveData<PagedList<Media>>
-    private val localMedia = MutableLiveData<List<Media>>()
-    val config = PagedList.Config.Builder()
-        .setPageSize(50)
+    //private var _flickrMedia = MutableLiveData<PagedList<Media>>()
+    lateinit var flickrMedia: LiveData<PagedList<Media>>
+
+    //get() = _flickrMedia
+    lateinit var localMedia: LiveData<PagedList<Media>>
+
+    private val config = PagedList.Config.Builder()
+        .setPageSize(30)
         .setEnablePlaceholders(false)
         .build()
 
     init {
 
-        if (source==Source.FLICKR){
+        if (source == Source.FLICKR) {
 
             searchMediaByQuery(ApiInterface.DEFAULT_QUERY)
-        }
-        else
+        } else
             fetchLocalMedia()
 
     }
 
-    fun searchMediaByQuery(query: String) {
-        allMedia  = getMedia(query).build()
-    }
+    fun searchMediaByQuery(query: String) = getMedia(query)
 
-    private fun fetchLocalMedia() {
-
-        viewModelScope.launch {
-            withContext(Dispatchers.IO){
-                localMedia.postValue(getLocalMedia())
-            }
-        }
+    fun fetchLocalMedia() {
+        val localFactory = LocalDatasourceFactory(viewModelScope, mediaType, appContext)
+        localMedia = LivePagedListBuilder(localFactory, config).build()
 
     }
 
-    private fun getMedia(query:String):LivePagedListBuilder<Long, Media> {
+    private fun getMedia(query: String){
 
-        Log.e("QUERYFUNC>>",query+"<<<")
+        Log.e("QUERYFUNC>>", query + "<<<")
 
         val dataSourceFactory = FlickrDatasourceFactory(query, viewModelScope, mediaType)
 
-        Log.e("AfterFactory>>>", "YES")
-        return LivePagedListBuilder<Long,Media>(dataSourceFactory,config)
-    }
-
-    fun observeAllMedia(): LiveData<PagedList<Media>> {
-        return allMedia
-    }
-
-
-    private suspend fun getLocalMedia(): List<Media> {
-        return FetchMediaModule.getAllMedia(
-            getApplication(),
-            mediaType
-        )
-    }
-
-    fun setQuery(text: String) {
-        searchQuery.value=text
-    }
-
-    fun observeSearchQuery() :MutableLiveData<String>{
-        return searchQuery
-    }
-
-    fun observeLocalMedia(): MutableLiveData<List<Media>> {
-        return localMedia
-
-    }
-
-    fun invalidateData() {
-        TODO("Not yet implemented")
+        flickrMedia = LivePagedListBuilder<Long, Media>(dataSourceFactory, config).build()
     }
 }
