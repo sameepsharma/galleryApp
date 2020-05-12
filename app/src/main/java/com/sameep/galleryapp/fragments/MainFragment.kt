@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.sameep.galleryapp.R
+import com.sameep.galleryapp.adapters.ChildViewPagerStateAdapter
 import com.sameep.galleryapp.adapters.MyViewPagerStateAdapter
 import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.enums.Source
@@ -35,8 +37,7 @@ class MainFragment : Fragment {
 
     private fun setupTabs(fragView: View) {
 
-
-        val adapter = MyViewPagerStateAdapter(childFragmentManager)
+        val adapter = ChildViewPagerStateAdapter(source,childFragmentManager)
         //add fragments to viewPager
         val images = MediaFragment(MediaType.IMAGE, source)
         val videos = MediaFragment(MediaType.VIDEO, source)

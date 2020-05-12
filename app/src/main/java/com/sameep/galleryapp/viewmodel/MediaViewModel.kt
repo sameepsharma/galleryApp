@@ -43,10 +43,11 @@ class MediaViewModel(
     init {
 
         if (source == Source.FLICKR) {
-
             searchMediaByQuery(ApiInterface.DEFAULT_QUERY)
-        } else
+        } else{
             fetchLocalMedia()
+            Log.e("LocalInitSize>>", "${localMedia.value?.size} <<<")
+        }
 
     }
 

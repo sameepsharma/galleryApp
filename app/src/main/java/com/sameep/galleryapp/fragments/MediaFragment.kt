@@ -37,11 +37,24 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
     onAdapterItemClickListener {
 
     private lateinit var galleryAdapter: GalleryAdapter
+    private var hasLoadedOnce=false
     //private lateinit var localAdapter : LocalMeddiaAdapter
 
     private val localViewModel : MediaViewModel by viewModels<MediaViewModel>() {
         LocalViewModelFactory(GalleryApp.app, mediaType, RetrofitProvider.getRetrofit().create(ApiInterface::class.java), source)
     }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(true)
+        if (this.isVisible) {
+            if (isVisibleToUser && !hasLoadedOnce){
+
+                hasLoadedOnce=true
+            }
+
+        }
+        }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,7 +125,13 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
 
     }
 
-
+   /* override fun onResume() {
+        super.onResume()
+        localViewModel.searchMediaByQuery(ApiInterface.DEFAULT_QUERY)
+        localViewModel.flickrMedia.observe(requireActivity(), Observer {
+            updateList(it)
+        })
+    }*/
 
     override fun onItemClick(image: Media) {
 

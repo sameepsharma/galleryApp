@@ -5,15 +5,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.sameep.galleryapp.enums.Source
+import com.sameep.galleryapp.fragments.MediaFragment
+import okhttp3.MediaType
 
-class MyViewPagerStateAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
+class ChildViewPagerStateAdapter(val source:Source,fm: FragmentManager): FragmentStatePagerAdapter(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT){
     private val fragmentList = mutableListOf<Fragment>()
     private val fragmentTitleList = mutableListOf<String>()
 
     override fun getItem(position: Int): Fragment {
         return when(position){
-            0-> fragmentList[0]
-            1-> fragmentList[1]
+            0-> MediaFragment(com.sameep.galleryapp.enums.MediaType.IMAGE,source )
+            1-> MediaFragment(com.sameep.galleryapp.enums.MediaType.VIDEO,source)
             else -> throw IllegalArgumentException("Fragment Not Found")
 
         }
