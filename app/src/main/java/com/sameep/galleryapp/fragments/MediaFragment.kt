@@ -1,5 +1,6 @@
 package com.sameep.galleryapp.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,11 +14,10 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sameep.galleryapp.adapters.GalleryAdapter
-import com.androidcodeman.simpleimagegallery.utils.LocalMeddiaAdapter
-import com.sameep.galleryapp.adapters.onAdapterItemClickListener
 import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.ImageDetailActivity
+import com.sameep.galleryapp.adapters.GalleryAdapter
+import com.sameep.galleryapp.adapters.onAdapterItemClickListener
 import com.sameep.galleryapp.application.GalleryApp
 import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.enums.MediaType
@@ -25,10 +25,11 @@ import com.sameep.galleryapp.enums.Source
 import com.sameep.galleryapp.rest.ApiInterface
 import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.singletons.RetrofitProvider
-import com.sameep.galleryapp.viewmodel.MediaViewModel
 import com.sameep.galleryapp.viewmodel.LocalViewModelFactory
+import com.sameep.galleryapp.viewmodel.MediaViewModel
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.fragment_images.view.*
+
 
 /**
  * A simple [Fragment] subclass.
@@ -56,6 +57,17 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         }
 
 
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (isFragmentVisible(this)){
+            setupViews(view)
+            setupSwipeToRefresh(view)
+            setUpObserverForMedia()
+            initSearch(view,localViewModel)
+
+        }
+    }*/
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,40 +80,39 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
         else
             fragView.input_layout.visibility = View.GONE
 
-        setupViews(fragView)
-        setupSwipeToRefresh(fragView)
-        setUpObserverForMedia()
-        initSearch(fragView,localViewModel)
+
+            setupViews(fragView)
+            setupSwipeToRefresh(fragView)
+            setUpObserverForMedia()
+            initSearch(fragView,localViewModel)
+
 
         return fragView
     }
 
-
+    fun isFragmentVisible(fragment: Fragment): Boolean {
+        val activity: Activity? = fragment.activity
+        val focusedView = fragment.requireView()!!.findFocus()
+        return activity != null && focusedView != null && focusedView === activity.window.decorView.findFocus()
+    }
     private fun setupSwipeToRefresh(
         fragView: View
     ) {
         fragView.frag_swipe.setOnRefreshListener {
             fragView.frag_loader.visibility = View.VISIBLE
-            localViewModel.searchMediaByQuery(fragView.input.text.toString())
+            if (source==Source.FLICKR)
+                localViewModel.searchMediaByQuery(fragView.input.text.toString())
+            else
+                localViewModel.fetchLocalMedia()
             fragView.frag_swipe.isRefreshing = false
         }
 
     }
 
     private fun setUpObserverForMedia() {
-        if (source==Source.FLICKR){
-            localViewModel.flickrMedia.observe(requireActivity(), Observer {
-                updateList(it)
-            })
-        }else{
-            localViewModel.fetchLocalMedia()
-            localViewModel.localMedia.observe(requireActivity(), Observer {
-                it?.let {
-                    updateList(it)
-                    //updateLocalList(it)
-                }
-            })}
-
+        localViewModel.mediator.observe(requireActivity(), Observer {
+            updateList(it)
+        })
     }
 
     private fun updateList(data: PagedList<Media>) {
@@ -125,14 +136,6 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
 
     }
 
-   /* override fun onResume() {
-        super.onResume()
-        localViewModel.searchMediaByQuery(ApiInterface.DEFAULT_QUERY)
-        localViewModel.flickrMedia.observe(requireActivity(), Observer {
-            updateList(it)
-        })
-    }*/
-
     override fun onItemClick(image: Media) {
 
         val bundle = Bundle()
@@ -151,9 +154,9 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
                // model.invalidateData()
 
                 model.searchMediaByQuery(fragView.input.text.toString())
-                model.flickrMedia.observe(requireActivity(), Observer {
+                /*model.flickrMedia.observe(requireActivity(), Observer {
                     updateList(it)
-                })
+                })*/
                 true
             } else {
                 false

@@ -3,10 +3,7 @@ package com.sameep.galleryapp.viewmodel
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
@@ -29,8 +26,11 @@ class MediaViewModel(
 ) :
     AndroidViewModel(appContext) {
 
+
+    val mediator=MediatorLiveData<PagedList<Media>>()
+
     //private var _flickrMedia = MutableLiveData<PagedList<Media>>()
-    lateinit var flickrMedia: LiveData<PagedList<Media>>
+    lateinit var flickrMedia : LiveData<PagedList<Media>>
 
     //get() = _flickrMedia
     lateinit var localMedia: LiveData<PagedList<Media>>
@@ -56,6 +56,9 @@ class MediaViewModel(
     fun fetchLocalMedia() {
         val localFactory = LocalDatasourceFactory(viewModelScope, mediaType, appContext)
         localMedia = LivePagedListBuilder(localFactory, config).build()
+        mediator.addSource(localMedia, Observer {
+            mediator.postValue(it)
+        })
 
     }
 
@@ -66,5 +69,8 @@ class MediaViewModel(
         val dataSourceFactory = FlickrDatasourceFactory(query, viewModelScope, mediaType)
 
         flickrMedia = LivePagedListBuilder<Long, Media>(dataSourceFactory, config).build()
+        mediator.addSource(flickrMedia, Observer {
+          mediator.postValue(it)
+        })
     }
 }
