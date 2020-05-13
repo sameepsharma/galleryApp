@@ -11,7 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LocalMediaDataSource(private val mediaType: MediaType, private val scope: CoroutineScope, private val context: Context): PositionalDataSource<Media>() {
+class LocalMediaDataSource(private val mediaType: MediaType
+                           , private val scope: CoroutineScope, private val context: Context): PositionalDataSource<Media>() {
 
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Media>) {
         var list = listOf<Media>()

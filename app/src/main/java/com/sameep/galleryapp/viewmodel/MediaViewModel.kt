@@ -2,20 +2,15 @@ package com.sameep.galleryapp.viewmodel
 
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.sameep.galleryapp.backgroundtasks.FetchMediaModule
 import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.datasource.FlickrDatasourceFactory
 import com.sameep.galleryapp.datasource.LocalDatasourceFactory
 import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.enums.Source
 import com.sameep.galleryapp.rest.ApiInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MediaViewModel(
@@ -26,14 +21,14 @@ class MediaViewModel(
 ) :
     AndroidViewModel(appContext) {
 
+    companion object{
+
+        const val EMPTYQUERY = ""
+    }
 
     val mediator=MediatorLiveData<PagedList<Media>>()
 
-    //private var _flickrMedia = MutableLiveData<PagedList<Media>>()
-    lateinit var flickrMedia : LiveData<PagedList<Media>>
-
-    //get() = _flickrMedia
-    lateinit var localMedia: LiveData<PagedList<Media>>
+    lateinit var media : LiveData<PagedList<Media>>
 
     private val config = PagedList.Config.Builder()
         .setPageSize(30)
@@ -45,32 +40,22 @@ class MediaViewModel(
         if (source == Source.FLICKR) {
             searchMediaByQuery(ApiInterface.DEFAULT_QUERY)
         } else{
-            fetchLocalMedia()
-            Log.e("LocalInitSize>>", "${localMedia.value?.size} <<<")
+            fetchMedia(EMPTYQUERY)
         }
 
     }
 
-    fun searchMediaByQuery(query: String) = getMedia(query)
+    fun searchMediaByQuery(query: String) = fetchMedia(query)
 
-    fun fetchLocalMedia() {
-        val localFactory = LocalDatasourceFactory(viewModelScope, mediaType, appContext)
-        localMedia = LivePagedListBuilder(localFactory, config).build()
-        mediator.addSource(localMedia, Observer {
+    fun fetchMedia(query: String) {
+
+        val mediaFactory =
+            if (source==Source.LOCAL) LocalDatasourceFactory(viewModelScope, mediaType, appContext)
+            else FlickrDatasourceFactory(query, viewModelScope, mediaType, apiClient)
+        media = LivePagedListBuilder(mediaFactory, config).build()
+        mediator.addSource(media, Observer {
             mediator.postValue(it)
         })
 
-    }
-
-    private fun getMedia(query: String){
-
-        Log.e("QUERYFUNC>>", query + "<<<")
-
-        val dataSourceFactory = FlickrDatasourceFactory(query, viewModelScope, mediaType)
-
-        flickrMedia = LivePagedListBuilder<Long, Media>(dataSourceFactory, config).build()
-        mediator.addSource(flickrMedia, Observer {
-          mediator.postValue(it)
-        })
     }
 }

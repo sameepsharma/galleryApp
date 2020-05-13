@@ -103,7 +103,7 @@ class MediaFragment(private val mediaType:MediaType, private val source: Source)
             if (source==Source.FLICKR)
                 localViewModel.searchMediaByQuery(fragView.input.text.toString())
             else
-                localViewModel.fetchLocalMedia()
+                localViewModel.fetchMedia(MediaViewModel.EMPTYQUERY)
             fragView.frag_swipe.isRefreshing = false
         }
 
