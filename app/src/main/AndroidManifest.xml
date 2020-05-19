@@ -15,15 +15,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.CustomMediaActivity"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-
-
         <activity android:name=".activities.ImageDetailActivity" />
-        <activity android:name=".activities.TabViewpagerActivity"
+        <activity
+            android:name=".activities.TabViewpagerActivity"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

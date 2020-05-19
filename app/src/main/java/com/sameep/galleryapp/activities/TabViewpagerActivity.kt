@@ -1,8 +1,10 @@
 package com.sameep.galleryapp.activities
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -19,28 +21,30 @@ class TabViewpagerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tab_viewpager)
 
-   //     viewModel = TabViewModel(this.application)
+        //     viewModel = TabViewModel(this.application)
         if (hasPermission())
-        setUpTabs()
+            setUpViews()
         else
-            getpermission()
-       // signIn()
+            getPermission()
+        // signIn()
 
     }
 
-    private fun setUpTabs() {
+    private fun setUpViews() {
 
         val adapter = MyViewPagerStateAdapter(supportFragmentManager).apply {
             //add fragments to viewPager
             val local = MainFragment(Source.LOCAL)
             val cloud = MainFragment(Source.FLICKR)
+            val custom = MainFragment(Source.CUSTOM)
 
-            addFragment(local, "Local Media")
-            addFragment(cloud, "Cloud Media")
+            addFragment(local, "Local")
+            addFragment(cloud, "Cloud")
+            addFragment(custom, "Saved")
 
         }
 
-        pager.adapter=adapter
+        pager.adapter = adapter
         tab.setupWithViewPager(pager)
         //set tab icons
         tab.getTabAt(0)?.setIcon(R.drawable.ic_home_black_24dp)
@@ -59,7 +63,7 @@ class TabViewpagerActivity : AppCompatActivity() {
                 )
     }
 
-    private fun getpermission() {
+    private fun getPermission() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
@@ -78,9 +82,23 @@ class TabViewpagerActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_PERMISSIONS -> {
-                setUpTabs()
+                setUpViews()
             }
         }
+    }
+
+    private fun showDialog(context: Context) {
+
+        val dialog = AlertDialog.Builder(context).setCancelable(true)
+            .setPositiveButton(
+                "Create"
+            ) { _, _ -> saveFolderNameToDb("") }.setNegativeButton(
+                "Cancel"
+            ) { dialog, _ -> dialog?.dismiss() }.show()
+    }
+
+    private fun saveFolderNameToDb(s: String) {
+        TODO("Insert Query Here")
     }
 
 }

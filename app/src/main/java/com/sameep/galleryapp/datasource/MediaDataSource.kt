@@ -58,7 +58,7 @@ class MediaDataSource(
             scope.launch {
                 val response = apiClient.getImagesForQuery(ApiInterface.key, query, params.key, params.requestedLoadSize)
                 if (response.isSuccessful){
-                    response?.let { it1 ->
+                    response.let { it1 ->
                         if (it1.isSuccessful) {
 
                             val respBody = it1.body()
@@ -93,13 +93,15 @@ class MediaDataSource(
                     val url = when (mediaType) {
                         MediaType.IMAGE -> "https://farm${obj.farm}.staticflickr.com/${obj.server}/${obj.id}_${obj.secret}_z.jpg"
                         MediaType.VIDEO -> obj.url_z
+                        else->""
                     }
                     val item = Media(
                         name = obj.title,
                         thumbnailUrl = url,
                         type = mediaType,
                         tags = if (obj.tags == null || obj.tags=="") null else obj.tags,
-                        id = obj.id
+                        id = obj.id,
+                        inFolder = null
                     )
                     setData.add(item)
                 }

@@ -17,11 +17,60 @@
         app:defaultNavHost="true"
         />
 
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/local_pager"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/local_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_alignParentBottom="true"
+    android:layout_alignEnd="@id/local_pager"
+    android:layout_alignRight="@id/local_pager"
+    >
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_save"
+        android:tint="@android:color/darker_gray"
+        app:backgroundTint="@android:color/darker_gray"
+        app:fabSize="mini"
+        android:layout_gravity="center"
+        app:rippleColor="@android:color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_folder"
+        android:layout_gravity="center"
+        android:tint="@android:color/darker_gray"
+        app:backgroundTint="@android:color/darker_gray"
+        app:fabSize="mini"
+        app:rippleColor="@android:color/white" />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/local_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_margin="20dp"
+            android:src="@drawable/ic_add"
+            android:layout_alignParentBottom="true"/>
+
+</LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

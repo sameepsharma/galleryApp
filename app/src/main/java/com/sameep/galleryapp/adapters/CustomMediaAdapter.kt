@@ -12,11 +12,11 @@ import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.viewholders.PicHolder
 
-interface onLocalItemClickListener {
+interface onCustomItemClickListener {
     fun onItemClick(item: Media)
 }
 
-class LocalMeddiaAdapter(
+class CustomMediaAdapter(
     private var pictureList: List<Media>?,
     private val pictureContx: Context,
     private val glide: RequestManager
@@ -24,7 +24,7 @@ class LocalMeddiaAdapter(
     RecyclerView.Adapter<PicHolder>() {
 
 
-    var onLocalClickRef: onAdapterItemClickListener? = null
+    var onClickRef: onCustomItemClickListener? = null
 
     fun setLocalList(list:List<Media>){
         this.pictureList=list
@@ -54,7 +54,7 @@ class LocalMeddiaAdapter(
 
             holder.picture.setOnClickListener {
 
-                onLocalClickRef?.onItemClick(image)
+                onClickRef?.onItemClick(image)
 
 
             }
