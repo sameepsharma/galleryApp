@@ -28,7 +28,7 @@ class ChildViewPagerStateAdapter(val source: Source, fm: FragmentManager) :
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return fragmentTitleList.get(position)
+        return fragmentTitleList[position]
     }
 
     fun addFragment(fragment: Fragment, title: String) {
@@ -36,4 +36,5 @@ class ChildViewPagerStateAdapter(val source: Source, fm: FragmentManager) :
         fragmentTitleList.add(title)
 
     }
+
 }

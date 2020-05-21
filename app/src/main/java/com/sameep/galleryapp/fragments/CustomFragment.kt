@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,9 +18,7 @@ import com.sameep.galleryapp.R
 import com.sameep.galleryapp.activities.CustomMediaActivity
 import com.sameep.galleryapp.application.GalleryApp
 import com.sameep.galleryapp.dataclasses.Folder
-import com.sameep.galleryapp.enums.MediaType
-import com.sameep.galleryapp.enums.Source
-import com.sameep.galleryapp.viewmodel.CustomDataViewModel
+import com.sameep.galleryapp.viewmodel.ActivityViewModel
 import kotlinx.android.synthetic.main.fragment_custom.view.*
 
 /**
@@ -48,11 +46,10 @@ class CustomFragment : Fragment(), OnCustomFolderClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.e("CustomOnView>>", "YES<<<")
-        val model = ViewModelProvider(
-            requireActivity(),
+        val model : ActivityViewModel by activityViewModels {
             ViewModelProvider.AndroidViewModelFactory(GalleryApp.app)
-        ).get(CustomDataViewModel::class.java)
-        model.folderList.observe(requireActivity(), Observer {
+        }
+        model.allFolders.observe(requireActivity(), Observer {
             if (it == null) {
                 view.tv_no_folder.visibility = View.VISIBLE
                 view.custom_rv.visibility = View.GONE

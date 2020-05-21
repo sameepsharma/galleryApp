@@ -14,5 +14,5 @@ import kotlinx.android.parcel.Parcelize
 data class Media(
     val name: String, val thumbnailUrl: String?, val type: MediaType, val date: String? = null
     , val mime: String? = null, val tags: String?, @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long
-    , var inFolder: String?=null, var isSelected: Boolean=false
+    , var inFolder: String?=null
 ) : Parcelable

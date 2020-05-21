@@ -2,6 +2,7 @@ package com.sameep.galleryapp.fragments
 
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -26,21 +26,19 @@ import com.sameep.galleryapp.adapters.ChildViewPagerStateAdapter
 import com.sameep.galleryapp.animations.FabAnimation
 import com.sameep.galleryapp.application.GalleryApp
 import com.sameep.galleryapp.dataclasses.Folder
-import com.sameep.galleryapp.dataclasses.Media
 import com.sameep.galleryapp.enums.MediaType
 import com.sameep.galleryapp.enums.Source
 import com.sameep.galleryapp.viewmodel.ActivityViewModel
-import com.sameep.galleryapp.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.local_media_fragment.*
 import kotlinx.android.synthetic.main.local_media_fragment.view.*
 
 class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
     var source: Source = Source.DEFAULT
-    private val model: MainViewModel by viewModels {
+    private val activityModel: ActivityViewModel by activityViewModels {
         ViewModelProvider.AndroidViewModelFactory(GalleryApp.app)
     }
-    private val activityModel: ActivityViewModel by activityViewModels()
     private var isRotate = false
+    private var dailogList: Dialog? = null
 
     constructor(source: Source) : this() {
         this.source = source
@@ -74,6 +72,7 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
     }
 
     private fun setupTabs(fragView: View) {
+        fragView.local_pager.offscreenPageLimit = 2
 
         val adapter = ChildViewPagerStateAdapter(source, childFragmentManager)
         //add fragments to viewPager
@@ -141,7 +140,7 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
                         null,
                         System.currentTimeMillis()
                     )
-                    model.insertIntoFolder(folder)
+                    activityModel.insertIntoFolder(folder)
                     Log.e("Insert", "Yes")
                     dialog?.dismiss()
                 }
@@ -153,17 +152,17 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
 
     private fun showFolderList() {
 
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Select Folder")
+        val builderList = AlertDialog.Builder(requireContext())
+        builderList.setTitle("Select Folder")
         val customView = layoutInflater.inflate(R.layout.dialog_folder_list, null)
-        builder.setView(customView)
+        builderList.setView(customView)
         val dialogRv = customView.findViewById<RecyclerView>(R.id.dialog_rv)
         val noItems = customView.findViewById<TextView>(R.id.no_items_dialog)
         dialogRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val dividerDecor = DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
         dialogRv.addItemDecoration(dividerDecor)
         var list = emptyList<Folder>()
-        model.allFolders.observe(this, Observer {
+        activityModel.allFolders.observe(this, Observer {
             list = it
             if (list.isNotEmpty()) {
                 dialogRv.visibility = View.VISIBLE
@@ -173,24 +172,30 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
                 noItems.visibility = View.VISIBLE
             }
             val adapter = FolderListAdapter(requireContext(), list)
-            adapter.onFolderClickRef=this
+            adapter.onFolderClickRef = this
             dialogRv.adapter = adapter
 
         })
         Log.e("FolderSize>>>", "${list.size} <<<")
 
-        builder.show()
+        dailogList = builderList.show()
 
 
     }
 
     override fun onFolderItemClick(item: Folder) {
+        dailogList?.dismiss()
         val selectedList = activityModel.getSharedList()
-        for (i in selectedList){
-            Log.e("ItemFolderBrfore>>", "${i.inFolder} <<<")
-            i.inFolder=item.folderName
-            Log.e("ItemFolderAfter>>", "${i.inFolder} <<<")
-        }
-        model.insertMediaList(selectedList)
+
+        if (selectedList.size > 0) {
+            for (i in selectedList) {
+                Log.e("ItemFolderBrfore>>", "${i.inFolder} <<<")
+                i.inFolder = item.folderName
+                Log.e("ItemFolderAfter>>", "${i.inFolder} <<<")
+            }
+            activityModel.insertMediaList(selectedList)
+        } else
+            Toast.makeText(requireContext(), "No items selected!", Toast.LENGTH_LONG).show()
     }
+
 }

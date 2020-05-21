@@ -32,6 +32,7 @@ class TabViewpagerActivity : AppCompatActivity() {
 
     private fun setUpViews() {
 
+        pager.offscreenPageLimit=3
         val adapter = MyViewPagerStateAdapter(supportFragmentManager).apply {
             //add fragments to viewPager
             val local = MainFragment(Source.LOCAL)
