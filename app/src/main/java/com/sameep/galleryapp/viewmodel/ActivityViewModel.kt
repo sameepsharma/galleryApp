@@ -63,8 +63,8 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
 //
             val i = mediaDao.insertMedia(listToInsert)
             withContext(Dispatchers.Main){
-                if (alreadyExists)
-                    Toast.makeText(getApplication(), "Some items already exists and will be ignored!",Toast.LENGTH_LONG).show()
+
+                    Toast.makeText(getApplication(), "Media saved to folder, items already saved will be ignored!",Toast.LENGTH_LONG).show()
             }
 
 //            Log.e("InsertListKey>>", "${i[0]} <<<")

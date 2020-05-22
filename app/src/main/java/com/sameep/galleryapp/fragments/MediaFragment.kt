@@ -172,9 +172,8 @@ var cabMode:ActionMode?=null
         if (!inSelectionMode){
             activityModel.inSelectionMode(true)
             addToSharedList(item)
-            requireActivity().startActionMode(object : ActionMode.Callback {
+            cabMode = requireActivity().startActionMode(object : ActionMode.Callback {
                 override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
-                    cabMode = mode
                     addToSharedList(item)
                     addToListInAdapter(item)
                     return true
