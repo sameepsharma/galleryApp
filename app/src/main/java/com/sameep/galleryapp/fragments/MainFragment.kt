@@ -197,13 +197,17 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
         val selectedList = activityModel.getSharedList()
 
         if (selectedList.size > 0) {
-            for (i in selectedList) {
+            val iterator = selectedList.iterator()
+            while (iterator.hasNext()){
+                val i = iterator.next()
                 Log.e("ItemFolderBrfore>>", "${i.inFolder} <<<")
                 i.inFolder = item.folderName
                 Log.e("ItemFolderAfter>>", "${i.inFolder} <<<")
             }
             activityModel.insertMediaList(selectedList)
             activityModel.inSelectionMode(false)
+            Toast.makeText(requireContext(), "Media saved to folder, items already saved will be ignored!",Toast.LENGTH_LONG).show()
+
         } else
             Toast.makeText(requireContext(), "No items selected!", Toast.LENGTH_LONG).show()
     }

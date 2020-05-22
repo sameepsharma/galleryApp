@@ -50,24 +50,17 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
     fun insertMediaList(list : MutableList<Media>){
         viewModelScope.launch(Dispatchers.IO) {
             val listToInsert = mutableListOf<Media>()
-            var alreadyExists=false
-            for ((k, j) in list.withIndex()){
-                val savedList = mediaDao.checkIfExists(list[k].id, list[k].inFolder)
+            val insertListIterator = listToInsert.listIterator()
+            var iterator = list.iterator()
+            while (iterator.hasNext()){
+                val j = iterator.next()
+                val savedList = mediaDao.checkIfExists(j.id, j.inFolder)
                 Log.e("SizeChecking", "${savedList.size} >>>")
                 if (savedList.isEmpty())
-                    listToInsert.add(j)
-                else
-                    alreadyExists=true
+                    insertListIterator.add(j)
             }
-            //if (alreadyExists)
 //
             val i = mediaDao.insertMedia(listToInsert)
-            withContext(Dispatchers.Main){
-
-                    Toast.makeText(getApplication(), "Media saved to folder, items already saved will be ignored!",Toast.LENGTH_LONG).show()
-            }
-
-//            Log.e("InsertListKey>>", "${i[0]} <<<")
         }
     }
 
