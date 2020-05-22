@@ -13,6 +13,6 @@ import kotlinx.android.parcel.Parcelize
 @Entity(tableName = "media_table")
 data class Media(
     val name: String, val thumbnailUrl: String?, val type: MediaType, val date: String? = null
-    , val mime: String? = null, val tags: String?, @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long
+    , val mime: String? = null, val tags: String?, @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "db_id") val dbId: Long=0,val id: Long
     , var inFolder: String?=null
 ) : Parcelable

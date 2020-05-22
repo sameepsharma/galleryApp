@@ -41,6 +41,10 @@ class GalleryAdapter(
 
     fun setSelectionMode(inSelection: Boolean) {
         inSelectionMode = inSelection
+        if (!inSelection) {
+            listSelected = mutableListOf()
+            notifyDataSetChanged()
+        }
     }
 
     fun addToList(item: Media?) {
@@ -91,8 +95,10 @@ class GalleryAdapter(
 
             }
             holder.picture.setOnLongClickListener { view ->
-                listSelected.add(image)
-                notifyDataSetChanged()
+                if (!inSelectionMode) {
+                    listSelected.add(image)
+                    notifyDataSetChanged()
+                }
                 onLongPressRef?.onLongPress(image)
                 true
             }

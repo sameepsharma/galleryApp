@@ -21,6 +21,9 @@ interface MediaDao {
     @Query("SELECT * FROM media_table")
     fun getSavedMedia() : LiveData<List<Media>>
 
+    @Query("SELECT * FROM media_table where id = :id AND inFolder = :folderName")
+    suspend fun checkIfExists(id : Long, folderName:String?) : List<Media>
+
     /*@Query("SELECT * FROM folders_table")
     suspend fun getAllFiles():List<Media>*/
 

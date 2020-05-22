@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -42,6 +43,8 @@ class MediaFragment(
 
     private lateinit var galleryAdapter: GalleryAdapter
     private lateinit var fragloader: ProgressBar
+    //selectionMode
+    private var inSelectionMode = false
 
     private val activityModel: ActivityViewModel by activityViewModels()
     private val localViewModel: MediaViewModel by viewModels<MediaViewModel>() {
@@ -85,6 +88,9 @@ class MediaFragment(
 
         activityModel.observeActionMode().observe(requireActivity(), Observer {
             galleryAdapter.setSelectionMode(it)
+            inSelectionMode=it
+            if (!it)
+                cabMode?.finish()
         })
 
     }
@@ -159,37 +165,42 @@ class MediaFragment(
         }
 
     }
-
+var cabMode:ActionMode?=null
     override fun onLongPress(
         item: Media
     ) {
-        addToSharedList(item)
-        requireActivity().startActionMode(object : ActionMode.Callback {
-            override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
-                addToSharedList(item)
-                addToListInAdapter(item)
-                return true
-            }
+        if (!inSelectionMode){
+            activityModel.inSelectionMode(true)
+            addToSharedList(item)
+            requireActivity().startActionMode(object : ActionMode.Callback {
+                override fun onActionItemClicked(mode: ActionMode?, menuItem: MenuItem?): Boolean {
+                    cabMode = mode
+                    addToSharedList(item)
+                    addToListInAdapter(item)
+                    return true
+                }
 
-            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                activityModel.inSelectionMode(true)
-                return true
-            }
+                override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                    activityModel.inSelectionMode(true)
+                    return true
+                }
 
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                return false
-            }
+                override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                    return false
+                }
 
-            override fun onDestroyActionMode(mode: ActionMode?) {
-                Log.e("Destroy>>", "Yes<<<")
-                activityModel.clearSelectedList()
-                activityModel.inSelectionMode(false)
-                addToListInAdapter(null)
-                //mode?.finish()
-            }
+                override fun onDestroyActionMode(mode: ActionMode?) {
+                    Log.e("Destroy>>", "Yes<<<")
+                    activityModel.clearSelectedList()
+                    activityModel.inSelectionMode(false)
+                    addToListInAdapter(null)
+                    //mode?.finish()
+                }
 
-        })
+            })
 
+        }else
+            Toast.makeText(requireContext(), "Already in Selection Mode!", Toast.LENGTH_LONG).show()
 
     }
 

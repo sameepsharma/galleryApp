@@ -3,6 +3,7 @@ package com.sameep.galleryapp.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,16 +19,17 @@ import com.sameep.galleryapp.singletons.GlideProvider
 import com.sameep.galleryapp.viewmodel.CustomActivityViewModel
 import com.sameep.galleryapp.viewmodel.CustomViewModelFactory
 import kotlinx.android.synthetic.main.activity_custom_media.*
+import kotlinx.android.synthetic.main.fragment_custom.*
 
 class CustomMediaActivity : AppCompatActivity(), onCustomItemClickListener {
 
-    companion object{
+    companion object {
         const val INTENTKEY = "folder"
     }
 
-    lateinit var folder : Folder
+    lateinit var folder: Folder
 
-    lateinit var model : CustomActivityViewModel
+    lateinit var model: CustomActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,10 @@ class CustomMediaActivity : AppCompatActivity(), onCustomItemClickListener {
 
         folder = intent.getParcelableExtra(INTENTKEY)
 
-        model=ViewModelProvider(this, CustomViewModelFactory(GalleryApp.app, folderName = folder.folderName)).get(CustomActivityViewModel::class.java)
+        model = ViewModelProvider(
+            this,
+            CustomViewModelFactory(GalleryApp.app, folderName = folder.folderName)
+        ).get(CustomActivityViewModel::class.java)
 
         setupViews()
         setUpObserverAndAdapter()
@@ -44,11 +49,20 @@ class CustomMediaActivity : AppCompatActivity(), onCustomItemClickListener {
 
     private fun setUpObserverAndAdapter() {
 
-        model.observeMedia().observe(this, Observer {
-            val adapter = CustomMediaAdapter(it, this, GlideProvider.getGlide(this))
-            adapter.onClickRef=this
-            act_custom_rv.adapter=adapter
+        model.observeMedia().observe(this, Observer { list ->
+            if (list.isNotEmpty()) {
+                act_custom_rv.visibility=View.VISIBLE
+                no_media_custom.visibility=View.GONE
+                val adapter = CustomMediaAdapter(list, this, GlideProvider.getGlide(this)).also {
+                    it.onClickRef = this
+                }
+                act_custom_rv.adapter = adapter
+            } else {
+                act_custom_rv.visibility=View.GONE
+                no_media_custom.visibility=View.VISIBLE
+            }
         })
+
 
     }
 
@@ -58,7 +72,7 @@ class CustomMediaActivity : AppCompatActivity(), onCustomItemClickListener {
 
     override fun onItemClick(item: Media) {
 
-        val intent=Intent(this, ImageDetailActivity::class.java)
+        val intent = Intent(this, ImageDetailActivity::class.java)
         intent.putExtra(ImageDetailActivity.INTENT_DATA, item)
         startActivity(intent)
 

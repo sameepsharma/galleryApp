@@ -100,24 +100,28 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.local_fab -> {
-                isRotate = FabAnimation.rotateFab(v, !isRotate)
-                if (isRotate) {
-                    FabAnimation.showIn(fabSave)
-                    FabAnimation.showIn(fabFolder)
-                } else {
-                    FabAnimation.showOut(fabSave)
-                    FabAnimation.showOut(fabFolder)
-                }
-            }
+            R.id.local_fab -> toggleFab(v)
             R.id.fabSave -> {
                 showFolderList()
+                local_fab.performClick()
             }
             R.id.fabFolder -> {
                 showCreateFolderDialog()
+                local_fab.performClick()
             }
         }
 
+    }
+
+    fun toggleFab(v: View) {
+        isRotate = FabAnimation.rotateFab(v, !isRotate)
+        if (isRotate) {
+            FabAnimation.showIn(fabSave)
+            FabAnimation.showIn(fabFolder)
+        } else {
+            FabAnimation.showOut(fabSave)
+            FabAnimation.showOut(fabFolder)
+        }
     }
 
     private fun showCreateFolderDialog() {
@@ -140,8 +144,13 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
                         null,
                         System.currentTimeMillis()
                     )
-                    activityModel.insertIntoFolder(folder)
-                    Log.e("Insert", "Yes")
+                    try {
+
+                        activityModel.insertIntoFolder(folder)
+                        Log.e("Insert", "Yes")
+                    }catch (e:Exception){
+                        Log.e(e.toString(), e.localizedMessage)
+                    }
                     dialog?.dismiss()
                 }
             }
@@ -194,6 +203,7 @@ class MainFragment() : Fragment(), View.OnClickListener, OnFolderClickListener {
                 Log.e("ItemFolderAfter>>", "${i.inFolder} <<<")
             }
             activityModel.insertMediaList(selectedList)
+            activityModel.inSelectionMode(false)
         } else
             Toast.makeText(requireContext(), "No items selected!", Toast.LENGTH_LONG).show()
     }

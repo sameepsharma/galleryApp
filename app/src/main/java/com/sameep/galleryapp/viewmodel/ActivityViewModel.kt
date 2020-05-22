@@ -2,6 +2,7 @@ package com.sameep.galleryapp.viewmodel
 
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 class ActivityViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var mode = MutableLiveData<Boolean>()
+    private var mode = MutableLiveData<Boolean>(false)
     val mediaDao=MediaDatabase.getDataBase(application,viewModelScope).mediaDao()
     private val selectedMediaList = mutableListOf<Media>()
     var allFolders: LiveData<List<Folder>>
@@ -48,10 +49,25 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
 
     fun insertMediaList(list : MutableList<Media>){
         viewModelScope.launch(Dispatchers.IO) {
+            val listToInsert = mutableListOf<Media>()
+            var alreadyExists=false
+            for ((k, j) in list.withIndex()){
+                val savedList = mediaDao.checkIfExists(list[k].id, list[k].inFolder)
+                Log.e("SizeChecking", "${savedList.size} >>>")
+                if (savedList.isEmpty())
+                    listToInsert.add(j)
+                else
+                    alreadyExists=true
+            }
+            //if (alreadyExists)
+//
+            val i = mediaDao.insertMedia(listToInsert)
+            withContext(Dispatchers.Main){
+                if (alreadyExists)
+                    Toast.makeText(getApplication(), "Some items already exists and will be ignored!",Toast.LENGTH_LONG).show()
+            }
 
-            val i = mediaDao.insertMedia(list)
-
-            Log.e("InsertListKey>>", "${i[0]} <<<")
+//            Log.e("InsertListKey>>", "${i[0]} <<<")
         }
     }
 
